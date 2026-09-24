@@ -57,11 +57,11 @@
       <div class="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4 mb-3">
         <div>
           <label class="block text-xs font-bold text-slate-700 mb-1">Tên Tác Giả / CTV <span class="text-rose-500">*</span></label>
-          <input type="text" id="metaAuthor" placeholder="Ví dụ: Hoàng Nam (CTV)" class="w-full text-sm px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none transition" oninput="saveDraft()">
+          <input type="text" id="metaAuthor" placeholder="Họ tên hoặc Nickname..." class="w-full text-sm px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none transition" oninput="saveDraft()">
         </div>
         <div>
           <label class="block text-xs font-bold text-slate-700 mb-1">Tên Kịch Bản <span class="text-rose-500">*</span></label>
-          <input type="text" id="metaTitle" placeholder="Ví dụ: Cú Lừa 10 Tỷ Của Gã Sếp Trưởng" class="w-full text-sm px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none transition" oninput="saveDraft()">
+          <input type="text" id="metaTitle" placeholder="Tiêu đề video..." class="w-full text-sm px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none transition" oninput="saveDraft()">
         </div>
         <div>
           <label class="block text-xs font-bold text-slate-700 mb-1">Thể Loại Video</label>
@@ -127,7 +127,7 @@
           <h2 class="text-sm font-bold text-slate-700 uppercase tracking-wider flex items-center gap-2">
             <i class="fa-solid fa-film text-indigo-600"></i> 2. Chi Tiết Phân Cảnh (Bảng 5 Cột)
           </h2>
-          <p class="text-xs text-slate-400 mt-0.5">Nhấp vào từng ô để điền nội dung chi tiết</p>
+          <p class="text-xs text-slate-400 mt-0.5">Các ô đều hoàn toàn để trống để bạn nhập liệu tự do</p>
         </div>
         <button onclick="addScene()" class="px-3.5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl transition shadow flex items-center gap-1.5">
           <i class="fa-solid fa-plus"></i> Thêm Cảnh
@@ -279,13 +279,13 @@
   <script>
     // Danh sách góc máy chuẩn
     const cameraOptions = [
+      "Extreme Close-up (Cực cận ánh mắt, chi tiết)",
+      "Close-up (Cận cảnh biểu cảm vi mô)",
+      "Medium Shot (Trung cảnh từ thắt lưng)",
       "Low Angle (Góc thấp hất lên - Uy quyền)",
       "Eye Level (Ngang tầm mắt - Chân thực)",
       "High Angle (Góc cao nhìn xuống - Bất lực)",
       "Dutch Angle (Góc nghiêng - Bất an, nguy hiểm)",
-      "Extreme Close-up (Cực cận ánh mắt, chi tiết)",
-      "Close-up (Cận cảnh biểu cảm vi mô)",
-      "Medium Shot (Trung cảnh từ thắt lưng)",
       "Wide Shot (Toàn cảnh bao quát không gian)",
       "Tracking Shot (Máy quay bám đuổi hành động)",
       "Orbit Shot 360 (Quay tròn quanh chủ thể)",
@@ -299,13 +299,13 @@
     // Khởi tạo
     window.addEventListener('DOMContentLoaded', () => {
       loadDraft();
+      // Khởi tạo 4 phân cảnh hoàn toàn trống nội dung (chỉ có placeholder mờ)
       if (scenes.length === 0) {
         scenes = [
-          { time: "0 - 3s", vo: "", visual: "Cảnh Hook mở màn giật gân, ánh mắt sốc hoặc hành động bùng nổ...", camera: "Extreme Close-up (Cực cận ánh mắt, chi tiết)", sfx: "Tiếng sub-bass trầm giật mạnh, tiếng thở gấp" },
-          { time: "3 - 12s", vo: "", visual: "Mở rộng mâu thuẫn, diễn xuất biểu cảm vi mô, quai hàm cắn chặt...", camera: "Medium Shot (Trung cảnh từ thắt lưng)", sfx: "Tiếng bước chân gấp gáp, nhạc nền hồi hộp" },
-          { time: "12 - 30s", vo: "", visual: "Đỉnh điểm xung đột / Hành động va chạm mạnh mẽ...", camera: "Tracking Shot (Máy quay bám đuổi hành động)", sfx: "Tiếng kim loại va chạm, nhạc đẩy cao trào" },
-          { time: "30 - 40s", vo: "", visual: "Cú Twist lật kèo bất ngờ hoặc khoảnh khắc chạm đáy cảm xúc...", camera: "Close-up (Cận cảnh biểu cảm vi mô)", sfx: "Nhạc ngắt đột ngột, tiếng cười lạnh người" },
-          { time: "40 - 45s", vo: "", visual: "Cảnh kết thúc tạo vòng lặp vô tận (Seamless Loop) nối mượt về câu đầu...", camera: "Low Angle (Góc thấp hất lên - Uy quyền)", sfx: "Tiếng chuông ngân vang, tiếng thở phào" }
+          { time: "0 - 3s", vo: "", visual: "", camera: "Extreme Close-up (Cực cận ánh mắt, chi tiết)", sfx: "" },
+          { time: "3 - 12s", vo: "", visual: "", camera: "Medium Shot (Trung cảnh từ thắt lưng)", sfx: "" },
+          { time: "12 - 30s", vo: "", visual: "", camera: "Tracking Shot (Máy quay bám đuổi hành động)", sfx: "" },
+          { time: "30 - 40s", vo: "", visual: "", camera: "Close-up (Cận cảnh biểu cảm vi mô)", sfx: "" }
         ];
         renderScenes();
       }
@@ -336,7 +336,7 @@
             <div class="flex items-center space-x-2">
               <div class="flex items-center space-x-1">
                 <span class="text-[11px] font-bold text-slate-500">Giây:</span>
-                <input type="text" value="${scene.time}" placeholder="0 - 3s" class="text-xs font-bold px-2 py-1 w-20 border rounded-lg bg-white text-center focus:ring-1 focus:ring-indigo-500 focus:outline-none" oninput="updateScene(${index}, 'time', this.value)">
+                <input type="text" value="${scene.time || ''}" placeholder="VD: 0 - 3s" class="text-xs font-bold px-2 py-1 w-24 border rounded-lg bg-white text-center focus:ring-1 focus:ring-indigo-500 focus:outline-none" oninput="updateScene(${index}, 'time', this.value)">
               </div>
               ${scenes.length > 1 ? `
                 <button onclick="removeScene(${index})" class="text-slate-400 hover:text-rose-500 p-1 text-xs transition" title="Xóa cảnh này">
@@ -351,13 +351,13 @@
               <label class="block text-[11px] font-bold text-slate-600 mb-1">
                 <i class="fa-solid fa-microphone text-indigo-500"></i> Lời Thoại / Phụ Đề (Voiceover)
               </label>
-              <textarea rows="3" placeholder="Nhập câu thoại hoặc lời đọc ngầm (nếu không có thoại ghi: Không thoại)..." class="w-full text-xs p-2.5 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none" oninput="updateScene(${index}, 'vo', this.value)">${scene.vo}</textarea>
+              <textarea rows="3" placeholder="Nhập câu thoại hoặc lời đọc ngầm (Nếu không có thoại ghi: Không thoại)..." class="w-full text-xs p-2.5 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none" oninput="updateScene(${index}, 'vo', this.value)">${scene.vo || ''}</textarea>
             </div>
             <div>
               <label class="block text-[11px] font-bold text-slate-600 mb-1">
                 <i class="fa-solid fa-eye text-emerald-500"></i> Mô Tả Hình Ảnh & Diễn Xuất Chi Tiết <span class="text-rose-500">*</span>
               </label>
-              <textarea rows="3" placeholder="Mô tả cụ thể: Nhân vật làm gì, quai hàm cắn chặt, mắt mở to, ánh sáng, va chạm vật lý..." class="w-full text-xs p-2.5 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none" oninput="updateScene(${index}, 'visual', this.value)">${scene.visual}</textarea>
+              <textarea rows="3" placeholder="Mô tả cụ thể: Nhân vật làm gì, quai hàm cắn chặt, mắt mở to, ánh sáng, va chạm vật lý..." class="w-full text-xs p-2.5 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none" oninput="updateScene(${index}, 'visual', this.value)">${scene.visual || ''}</textarea>
             </div>
           </div>
 
@@ -374,7 +374,7 @@
               <label class="block text-[11px] font-bold text-slate-600 mb-1">
                 <i class="fa-solid fa-volume-high text-pink-500"></i> Âm Thanh & Tiếng Động (SFX / BGM)
               </label>
-              <input type="text" value="${scene.sfx}" placeholder="Tiếng kính vỡ, tiếng thở gấp, đàn cello u buồn..." class="w-full text-xs px-3 py-2 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none" oninput="updateScene(${index}, 'sfx', this.value)">
+              <input type="text" value="${scene.sfx || ''}" placeholder="Tiếng kính vỡ, tiếng thở gấp, đàn cello u buồn..." class="w-full text-xs px-3 py-2 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none" oninput="updateScene(${index}, 'sfx', this.value)">
             </div>
           </div>
         `;
@@ -394,7 +394,7 @@
 
     function addScene() {
       scenes.push({
-        time: "3 - 5s",
+        time: "",
         vo: "",
         visual: "",
         camera: "Medium Shot (Trung cảnh từ thắt lưng)",
@@ -415,7 +415,7 @@
     function calculateDuration() {
       let maxSec = 0;
       scenes.forEach(s => {
-        const matches = s.time.match(/\d+/g);
+        const matches = (s.time || '').match(/\d+/g);
         if (matches) {
           const nums = matches.map(Number);
           const max = Math.max(...nums);
@@ -451,12 +451,13 @@
         message: document.getElementById('metaMessage').value,
         scenes: scenes
       };
-      localStorage.setItem('ai_script_draft_master', JSON.stringify(data));
+      localStorage.setItem('ai_script_draft_clean_v2', JSON.stringify(data));
       updatePreview();
     }
 
+    // Tải bản nháp và tự động thanh lọc các chuỗi tĩnh cũ nếu có
     function loadDraft() {
-      const raw = localStorage.getItem('ai_script_draft_master');
+      const raw = localStorage.getItem('ai_script_draft_clean_v2') || localStorage.getItem('ai_script_draft_master');
       if (raw) {
         try {
           const d = JSON.parse(raw);
@@ -466,7 +467,25 @@
           if (d.hook) document.getElementById('metaHook').value = d.hook;
           if (d.message) document.getElementById('metaMessage').value = d.message;
           if (d.scenes && Array.isArray(d.scenes)) {
-            scenes = d.scenes;
+            // Tự động thanh lọc văn bản mẫu tĩnh để ô luôn trống sạch sẽ
+            scenes = d.scenes.map(s => {
+              let cleanVisual = s.visual || "";
+              let cleanSfx = s.sfx || "";
+              // Nếu dính mẫu text cũ thì xóa trắng
+              if (cleanVisual.includes("Cảnh Hook mở màn") || cleanVisual.includes("Mở rộng mâu thuẫn") || cleanVisual.includes("Đỉnh điểm xung đột") || cleanVisual.includes("Cú Twist lật kèo") || cleanVisual.includes("Cảnh kết thúc tạo vòng lặp")) {
+                cleanVisual = "";
+              }
+              if (cleanSfx.includes("Tiếng sub-bass") || cleanSfx.includes("nhạc nền hồi hộp") || cleanSfx.includes("Tiếng kim loại va chạm") || cleanSfx.includes("Nhạc ngắt đột ngột") || cleanSfx.includes("Tiếng chuông ngân vang")) {
+                cleanSfx = "";
+              }
+              return {
+                time: s.time || "",
+                vo: s.vo || "",
+                visual: cleanVisual,
+                camera: s.camera || "Medium Shot (Trung cảnh từ thắt lưng)",
+                sfx: cleanSfx
+              };
+            });
             renderScenes();
           }
         } catch (e) {
@@ -476,7 +495,8 @@
     }
 
     function resetForm() {
-      if (confirm("Bạn có chắc muốn xóa trắng để làm kịch bản mới? Bản nháp cũ sẽ được làm mới.")) {
+      if (confirm("Bạn có chắc muốn xóa trắng để làm kịch bản mới?")) {
+        localStorage.removeItem('ai_script_draft_clean_v2');
         localStorage.removeItem('ai_script_draft_master');
         document.getElementById('metaTitle').value = '';
         document.getElementById('metaHook').value = '';
@@ -488,7 +508,7 @@
           { time: "30 - 40s", vo: "", visual: "", camera: "Close-up (Cận cảnh biểu cảm vi mô)", sfx: "" }
         ];
         renderScenes();
-        showToast("Đã làm mới biểu mẫu soạn thảo!");
+        showToast("Đã làm mới sạch sẽ! Các ô đều để trống sẵn sàng.");
       }
     }
 
@@ -532,7 +552,7 @@
         html += `
           <tr class="${idx % 2 === 0 ? 'bg-white' : 'bg-slate-50/50'}">
             <td class="p-2.5 text-center font-bold text-indigo-700">${String(idx + 1).padStart(2, '0')}</td>
-            <td class="p-2.5 text-center font-semibold text-slate-600">${s.time}</td>
+            <td class="p-2.5 text-center font-semibold text-slate-600">${s.time || '-'}</td>
             <td class="p-2.5 font-medium text-slate-900">${s.vo ? `"${s.vo}"` : '<span class="text-slate-400 italic">Không thoại</span>'}</td>
             <td class="p-2.5 text-slate-700 leading-relaxed">${s.visual || '<span class="text-slate-300 italic">Chưa nhập</span>'}</td>
             <td class="p-2.5 font-semibold text-slate-800">${s.camera.split('(')[0]}</td>
@@ -567,7 +587,7 @@
       t += `--------------------------------------------------------\n`;
 
       scenes.forEach((s, i) => {
-        t += `📍 SHOT ${String(i + 1).padStart(2, '0')} [${s.time}]:\n`;
+        t += `📍 SHOT ${String(i + 1).padStart(2, '0')} [${s.time || 'Thời lượng'}]:\n`;
         t += `🗣️ Thoại: ${s.vo ? `"${s.vo}"` : 'Không thoại'}\n`;
         t += `👁️ Hình ảnh: ${s.visual || ''}\n`;
         t += `🎥 Góc máy: ${s.camera}\n`;
