@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sổ Tay Biên Kịch Video Ngắn 100% AI - E-Book Tra Cứu</title>
+  <!-- Tailwind CSS & FontAwesome -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+    html { scroll-behavior: smooth; }
+    .hide-scrollbar::-webkit-scrollbar { display: none; }
+    .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen pb-24">
+
+  <!-- Header cố định trên cùng -->
+  <header class="bg-gradient-to-r from-indigo-800 via-indigo-900 to-purple-900 text-white shadow-md sticky top-0 z-40">
+    <div class="max-w-5xl mx-auto px-4 py-3 flex justify-between items-center gap-2">
+      <div class="flex items-center space-x-2.5">
+        <a href="index.html" class="w-8 h-8 rounded-lg bg-indigo-700 hover:bg-indigo-600 text-white flex items-center justify-center text-sm shadow transition" title="Về trang soạn kịch bản">
+          <i class="fa-solid fa-arrow-left"></i>
+        </a>
+        <div>
+          <h1 class="text-sm md:text-base font-black tracking-tight flex items-center gap-1.5">
+            <span>SỔ TAY BIÊN KỊCH AI</span>
+            <span class="text-[10px] bg-amber-400 text-indigo-950 font-bold px-1.5 py-0.5 rounded uppercase">E-Book</span>
+          </h1>
+          <p class="text-[10px] md:text-xs text-indigo-200">Bách khoa toàn thư 25 kịch bản mẫu & Kỹ thuật điện ảnh</p>
+        </div>
+      </div>
+      <div class="flex items-center space-x-2">
+        <button onclick="toggleTocModal()" class="px-2.5 py-1.5 bg-indigo-700/80 hover:bg-indigo-600 text-white text-xs font-semibold rounded-lg border border-indigo-500/30 transition flex items-center gap-1.5">
+          <i class="fa-solid fa-list-ul"></i> <span class="hidden sm:inline">Mục Lục</span>
+        </button>
+        <a href="index.html" class="px-3 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold rounded-lg shadow transition flex items-center gap-1.5">
+          <i class="fa-solid fa-pen-to-square"></i> Soạn Bài
+        </a>
+      </div>
+    </div>
+
+    <!-- Thanh tìm kiếm nhanh & Thanh lọc danh mục trên Mobile -->
+    <div class="bg-indigo-950/70 border-t border-indigo-700/40 px-4 py-2">
+      <div class="max-w-5xl mx-auto flex flex-col sm:flex-row gap-2">
+        <div class="relative flex-1">
+          <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-xs text-indigo-300"></i>
+          <input type="text" id="searchInput" placeholder="Tìm kịch bản (VD: drama, troll, huy oppa, góc máy...)" class="w-full text-xs pl-8 pr-3 py-1.5 bg-indigo-900/60 text-white placeholder-indigo-300 rounded-lg border border-indigo-700 focus:outline-none focus:bg-indigo-900 focus:ring-1 focus:ring-amber-400" oninput="filterScripts()">
+        </div>
+        <!-- Filter pills -->
+        <div class="flex gap-1.5 overflow-x-auto hide-scrollbar py-0.5 text-[11px]">
+          <button onclick="filterCategory('all')" class="cat-pill active px-2.5 py-1 rounded-full bg-amber-400 text-indigo-950 font-bold whitespace-nowrap">Tất Cả</button>
+          <button onclick="filterCategory('theory')" class="cat-pill px-2.5 py-1 rounded-full bg-indigo-900/80 text-indigo-200 hover:bg-indigo-800 font-semibold whitespace-nowrap">Lý Thuyết & Góc Máy</button>
+          <button onclick="filterCategory('drama')" class="cat-pill px-2.5 py-1 rounded-full bg-indigo-900/80 text-indigo-200 hover:bg-indigo-800 font-semibold whitespace-nowrap">Drama & Đấu Trí</button>
+          <button onclick="filterCategory('comedy')" class="cat-pill px-2.5 py-1 rounded-full bg-indigo-900/80 text-indigo-200 hover:bg-indigo-800 font-semibold whitespace-nowrap">Hài & Huy Oppa</button>
+          <button onclick="filterCategory('emotional')" class="cat-pill px-2.5 py-1 rounded-full bg-indigo-900/80 text-indigo-200 hover:bg-indigo-800 font-semibold whitespace-nowrap">Chữa Lành & Nước Mắt</button>
+          <button onclick="filterCategory('action')" class="cat-pill px-2.5 py-1 rounded-full bg-indigo-900/80 text-indigo-200 hover:bg-indigo-800 font-semibold whitespace-nowrap">Hành Động & Kinh Dị</button>
+          <button onclick="filterCategory('debate')" class="cat-pill px-2.5 py-1 rounded-full bg-indigo-900/80 text-indigo-200 hover:bg-indigo-800 font-semibold whitespace-nowrap">Tranh Luận & Chuyên Gia</button>
+          <button onclick="filterCategory('life')" class="cat-pill px-2.5 py-1 rounded-full bg-indigo-900/80 text-indigo-200 hover:bg-indigo-800 font-semibold whitespace-nowrap">Lifestyle & AI Tech</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-5xl mx-auto px-3.5 md:px-4 mt-6 space-y-8">
+
+    <!-- PHẦN 1: TƯ DUY NỀN TẢNG (THEORY) -->
+    <section id="section-theory" class="script-card" data-category="theory">
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 md:p-6 space-y-6">
+        
+        <div>
+          <div class="text-[11px] font-bold uppercase tracking-wider text-indigo-600 mb-1">Quy chuẩn cốt lõi</div>
+          <h2 class="text-base md:text-lg font-black text-slate-900">1. NGUYÊN LÝ BIÊN KỊCH VIDEO NGẮN ĐIỆN ẢNH</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3 text-xs">
+            <div class="p-3 bg-indigo-50/60 rounded-xl border border-indigo-100">
+              <strong class="text-indigo-900 block mb-1">👁️ Show, Don't Tell (Trực quan hóa):</strong>
+              Mọi cảm xúc và xung đột phải diễn đạt qua ánh mắt, hành động, không dựa hoàn toàn vào lời đọc voiceover.
+            </div>
+            <div class="p-3 bg-amber-50/60 rounded-xl border border-amber-100">
+              <strong class="text-amber-900 block mb-1">⚡ Nhịp cắt 2.5s - 3.5s (Pacing):</strong>
+              Cứ mỗi 2.5 đến 3 giây bắt buộc phải đổi một góc nhìn hoặc cỡ cảnh mới để kích thích não bộ liên tục.
+            </div>
+            <div class="p-3 bg-rose-50/60 rounded-xl border border-rose-100">
+              <strong class="text-rose-900 block mb-1">💥 Động lực học va chạm:</strong>
+              Mô tả đủ 3 pha: Tích lực ➡️ Va chạm bùng nổ ➡️ Hậu quả môi trường (mảnh vỡ, khói bụi, vệt nước).
+            </div>
+            <div class="p-3 bg-emerald-50/60 rounded-xl border border-emerald-100">
+              <strong class="text-emerald-900 block mb-1">🔄 Vòng lặp Seamless Loop:</strong>
+              Câu thoại kết thúc nối mượt ngữ pháp vào câu đầu tiên để người xem lặp lại video vô thức (>100% retention).
+            </div>
+          </div>
+        </div>
+
+        <!-- Bảng chỉ đạo diễn xuất vi mô -->
+        <div class="border-t border-slate-100 pt-5">
+          <h3 class="text-sm font-bold text-slate-800 mb-2 flex items-center gap-1.5">
+            <i class="fa-solid fa-face-angry text-indigo-600"></i> Chỉ Đạo Diễn Xuất Vi Mô (Micro-Expressions)
+          </h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+            <div class="p-2.5 bg-slate-50 rounded-lg border"><strong>Phẫn nộ kìm nén:</strong> Quai hàm gồ lên cứng đờ, ánh mắt rực lửa, nắm đấm siết chặt trắng bệch các khớp ngón.</div>
+            <div class="p-2.5 bg-slate-50 rounded-lg border"><strong>Bàng hoàng / Đau đớn:</strong> Mắt mở to ngấn lệ không chớp, môi hé run rẩy, sắc mặt tái nhợt, lùi lại nửa bước.</div>
+            <div class="p-2.5 bg-slate-50 rounded-lg border"><strong>Tự tin áp đảo / Lật kèo:</strong> Nụ cười nhếch mép nửa miệng (smirk), ánh nhìn sắc lạnh trực diện từ trên xuống.</div>
+            <div class="p-2.5 bg-slate-50 rounded-lg border"><strong>Hoảng loạn / Tuyệt vọng:</strong> Mồ hôi vã ra thái dương, mắt đảo liên hồi mất kiểm soát, thở gấp gáp đứt đoạn.</div>
+          </div>
+        </div>
+
+        <!-- Từ điển góc máy -->
+        <div class="border-t border-slate-100 pt-5">
+          <h3 class="text-sm font-bold text-slate-800 mb-2 flex items-center gap-1.5">
+            <i class="fa-solid fa-video text-indigo-600"></i> Từ Điển Góc Máy Điện Ảnh Dành Cho Biên Kịch
+          </h3>
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
+            <div class="p-2 bg-indigo-50/50 rounded border border-indigo-100"><strong>ECU:</strong> Cực cận ánh mắt, chi tiết</div>
+            <div class="p-2 bg-indigo-50/50 rounded border border-indigo-100"><strong>CU:</strong> Cận cảnh gương mặt cảm xúc</div>
+            <div class="p-2 bg-indigo-50/50 rounded border border-indigo-100"><strong>MS:</strong> Trung cảnh từ thắt lưng</div>
+            <div class="p-2 bg-indigo-50/50 rounded border border-indigo-100"><strong>Low Angle:</strong> Góc thấp (Uy quyền)</div>
+            <div class="p-2 bg-indigo-50/50 rounded border border-indigo-100"><strong>High Angle:</strong> Góc cao (Yếu thế)</div>
+            <div class="p-2 bg-indigo-50/50 rounded border border-indigo-100"><strong>Dutch Angle:</strong> Góc nghiêng (Bất an)</div>
+            <div class="p-2 bg-indigo-50/50 rounded border border-indigo-100"><strong>Tracking:</strong> Máy quay bám đuổi</div>
+            <div class="p-2 bg-indigo-50/50 rounded border border-indigo-100"><strong>Orbit 360:</strong> Xoay tròn quanh chủ thể</div>
+            <div class="p-2 bg-indigo-50/50 rounded border border-indigo-100"><strong>FPV Drone:</strong> Bay lượn tốc độ cao</div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- PHẦN 2: BỘ SƯU TẬP 25 KỊCH BẢN MẪU THỰC CHIẾN -->
+    <div class="flex justify-between items-center pt-2">
+      <div>
+        <h2 class="text-base md:text-lg font-black text-slate-900 flex items-center gap-2">
+          <i class="fa-solid fa-clapperboard text-indigo-600"></i> BỘ SƯU TẬP 25 KỊCH BẢN MẪU
+        </h2>
+        <p class="text-xs text-slate-500">Mỗi kịch bản được định dạng thẻ phân cảnh chuẩn trên di động</p>
+      </div>
+      <span id="scriptCountBadge" class="text-xs bg-indigo-100 text-indigo-800 font-bold px-2.5 py-1 rounded-full">25 Kịch Bản</span>
+    </div>
+
+    <!-- Container chứa toàn bộ 25 kịch bản -->
+    <div id="scriptListContainer" class="space-y-6">
+      <!-- Sẽ được render động bằng JS từ kho dữ liệu -->
+    </div>
+
+  </main>
+
+  <!-- MODAL MỤC LỤC TRƯỢT TRÊN MOBILE -->
+  <div id="tocModal" class="fixed inset-0 z-50 bg-slate-900/60 hidden flex justify-end">
+    <div class="bg-white w-5/6 max-w-sm h-full p-4 flex flex-col shadow-2xl overflow-y-auto">
+      <div class="flex justify-between items-center pb-3 border-b border-slate-100 mb-3">
+        <h3 class="font-black text-sm text-indigo-900 flex items-center gap-2">
+          <i class="fa-solid fa-bars-staggered"></i> MỤC LỤC NHANH
+        </h3>
+        <button onclick="toggleTocModal()" class="text-slate-400 hover:text-slate-700 p-1 text-base">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="space-y-1 text-xs overflow-y-auto flex-1" id="tocModalLinks">
+        <!-- Render danh sách link nhảy trang -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Nút trôi nổi góc dưới: Soạn bài & Lên đầu trang -->
+  <div class="fixed bottom-5 right-4 z-30 flex flex-col space-y-2">
+    <button onclick="window.scrollTo({ top: 0, behavior: 'smooth' })" class="w-10 h-10 rounded-full bg-slate-800/80 hover:bg-slate-900 text-white flex items-center justify-center shadow-lg transition" title="Lên đầu trang">
+      <i class="fa-solid fa-arrow-up text-xs"></i>
+    </button>
+    <a href="index.html" class="w-12 h-12 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white flex items-center justify-center shadow-xl transition transform hover:scale-105" title="Mở Form Soạn Kịch Bản">
+      <i class="fa-solid fa-pen text-base"></i>
+    </a>
+  </div>
+
+  <!-- Toast sao chép thành công -->
+  <div id="copyToast" class="fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-slate-900 text-white text-xs font-semibold px-4 py-2.5 rounded-xl shadow-2xl transition opacity-0 pointer-events-none flex items-center gap-2 z-50">
+    <i class="fa-solid fa-check text-emerald-400"></i>
+    <span>Đã sao chép kịch bản vào khay nhớ tạm!</span>
+  </div>
+
+  <!-- DỮ LIỆU TOÀN BỘ 25 KỊCH BẢN MẪU (JSON) & SCRIPT ĐIỀU KHIỂN -->
+  <script>
+    // Kho dữ liệu 25 kịch bản mẫu đầy đủ
+    const scriptsData = [
+      {
+        id: 1,
+        title: "Bữa Ăn Lúc Nửa Đêm",
+        genre: "Motif 'Khán Giả Tự Hiểu' (Phong cách Huy Oppa / Sâu cay ẩn dụ)",
+        category: "comedy",
+        duration: "~40 giây",
+        hook: "Một người đàn ông ngồi ăn tối lãng mạn lúc 2h sáng với chiếc ghế trống đối diện...",
+        message: "Khán giả tua lại để soi chi tiết người phụ nữ trong gương và chiếc nhẫn rơi vào ly rượu độc.",
+        shots: [
+          { num: "01 (HOOK)", time: "0 - 3s", vo: "Không thoại", visual: "Một người đàn ông ăn mặc lịch thiệp ngồi trước bàn ăn nến lãng mạn lúc 2h sáng. Đối diện là chiếc ghế trống có dao nĩa sang trọng. Ánh mắt nhìn chăm chú vào khoảng không.", camera: "Medium Shot ➡️ Push In", sfx: "Tiếng tích tắc đồng hồ cơ vang to, tiếng gió rít khẽ qua khe cửa sổ" },
+          { num: "02", time: "3 - 10s", vo: "Anh biết hôm nay là kỷ niệm ngày cưới của chúng ta... Em vẫn đẹp như ngày đầu.", visual: "Anh ta dịu dàng rót rượu vang đỏ vào chiếc ly đối diện. Bàn tay đeo nhẫn cưới sáng loáng. Camera lia chậm: Chiếc ly đối diện bất ngờ khẽ rung rinh như có ai chạm vào.", camera: "Close-up", sfx: "Tiếng rót rượu vang róc rách, tiếng kim loại cọ nhẹ vào đĩa sứ keng" },
+          { num: "03", time: "10 - 22s", vo: "Không thoại", visual: "Anh ta cắt miếng bít tết mỉm cười. Camera đổi góc nhìn từ sau lưng hướng vào gương lớn trên tường: Trong gương, người phụ nữ ngồi đối diện mặc váy cưới trắng toát... nhưng cơ thể trong suốt và đang khóc!", camera: "Over the Shoulder ➡️ Mirror Reflection", sfx: "Tiếng violin réo rắt u buồn, tiếng thì thầm vô hình thoảng qua tai" },
+          { num: "04 (TWIST)", time: "22 - 35s", vo: "Nhưng anh xin lỗi... thuốc giải độc hôm đó, anh chỉ đủ tiền mua cho một người.", visual: "Người đàn ông nhìn thẳng vào ly của mình. Một giọt nước mắt lăn trên má, nhưng khóe môi nhếch lên nụ cười kỳ dị không chớp mắt. Anh ta gỡ nhẫn cưới ném vào ly rượu.", camera: "Extreme Close-up", sfx: "Tiếng tõm chiếc nhẫn rơi vào ly rượu, nhạc ngắt đột ngột để lại tiếng ù tai rợn ngực" },
+          { num: "05 (LOOP)", time: "35 - 40s", vo: "Chữ hiển thị: Bạn có nhận ra điều bất thường ở bức ảnh trên tường?", visual: "Căn phòng mờ dần, trên bức tường phía sau là ảnh cưới: Người đàn ông đang ôm chặt một... chiếc áo cưới rỗng không có người! Cắt đen.", camera: "Wide Shot ➡️ Fade to Black", sfx: "Tiếng chuông đồng hồ điểm 1 tiếng trầm đục (Clock chime)" }
+        ]
+      },
+      {
+        id: 2,
+        title: "Thẻ Đen Quyền Lực",
+        genre: "Hài Bẻ Lái / Troll Châm Biếm (Deadpan Satire)",
+        category: "comedy",
+        duration: "~35 giây",
+        hook: "Tránh ra! Chỗ này không dành cho kẻ đi dép tổ ong như cậu!",
+        message: "Châm biếm mô-típ chủ tịch giả nghèo: Rút thẻ đen quyền lực chỉ để xin đi nhờ vệ sinh vì đau bụng.",
+        shots: [
+          { num: "01 (HOOK)", time: "0 - 3s", vo: "Tránh ra! Chỗ này không dành cho kẻ đi dép tổ ong như cậu!", visual: "Một chàng trai mặc quần đùi áo cộc bị hai bảo vệ to cao chặn trước cửa khách sạn 7 sao dát vàng. Người bảo vệ đẩy chàng trai ra với ánh mắt khinh miệt.", camera: "Low Angle ➡️ Push In", sfx: "Tiếng còi xe sang bóp còi bíp bíp, tiếng xô xát dứt khoát" },
+          { num: "02", time: "3 - 10s", vo: "Nhạc nền hào hùng bùng nổ", visual: "Chàng trai không nao núng, vuốt lại tóc. Anh ta thò tay vào túi quần đùi rách, chậm rãi rút ra chiếc thẻ đen kim loại mạ vàng quyền lực (Black Card).", camera: "Close-up ➡️ Crash Zoom", sfx: "Tiếng hiệu ứng kim loại rút kiếm Kenggg!, nhạc phim hành động dâng cao" },
+          { num: "03", time: "10 - 20s", vo: "Anh nghĩ chiếc thẻ này... đủ tư cách để tôi bước vào chứ?", visual: "Hai bảo vệ sững sờ, mắt trợn tròn, mồ hôi vã ra. Họ run rẩy cúi gập người 90 độ kính cẩn: 'Dạ... thưa Tổng giám đốc!'.", camera: "Wide Shot", sfx: "Tiếng đàn cello ngưng bặt, tiếng gió thổi lá vàng rơi xào xạc hài hước" },
+          { num: "04 (TWIST)", time: "20 - 30s", vo: "Tốt. Cho tôi đi nhờ vệ sinh cái, sáng giờ ăn bún đậu mắm tôm đau bụng quá!", visual: "Chàng trai ôm bụng co giò chạy vụt qua sảnh khách sạn với tướng chạy kì quặc, để lại hai bảo vệ đứng đơ như tượng đá nhìn theo.", camera: "Fast Pan Tracking Shot", sfx: "Tiếng kèn bẹp Toét! (Slide whistle), tiếng bước chân chạy cuống cuồng" },
+          { num: "05 (LOOP)", time: "30 - 35s", vo: "Và bài học đắt giá rút ra là...", visual: "Khung hình đóng băng cảnh chàng trai trượt chân trước cửa nhà vệ sinh dát vàng, biểu cảm méo xệch.", camera: "Freeze Frame ➡️ Text Pop-up", sfx: "Tiếng trống gõ Ba-dum-tss! đặc trưng của clip hài" }
+        ]
+      },
+      {
+        id: 3,
+        title: "Cú Lừa 10 Tỷ Của Gã Sếp Trưởng",
+        genre: "Drama Công Sở & Lật Kèo Đấu Trí (Corporate Revenge)",
+        category: "drama",
+        duration: "~45 giây",
+        hook: "Dự án 10 tỷ này là của tôi. Cậu chỉ là thực tập sinh, ai sẽ tin cậu?",
+        message: "Kẻ yếu thế tương kế tựu kế: Cài bẫy video hối lộ vào chính slide thuyết trình trước Chủ tịch.",
+        shots: [
+          { num: "01 (HOOK)", time: "0 - 3s", vo: "Dự án 10 tỷ này là của tôi. Cậu chỉ là thực tập sinh, ai sẽ tin cậu?", visual: "Gã trưởng phòng ném tập hồ sơ vào mặt chàng trai thực tập sinh giữa phòng họp kính. Ánh mắt gã trịch thượng, nhếch mép khinh bỉ.", camera: "Medium Close-up", sfx: "Tiếng đập bàn Rầm!, tiếng giấy bay phần phật, tiếng bass trầm rung chuyển" },
+          { num: "02", time: "3 - 12s", vo: "Nếu cậu dám hé răng nửa lời, tôi sẽ đuổi việc cậu ngay lập tức!", visual: "Chàng trai quỳ nhặt từng tờ giấy. Cận cảnh ánh mắt cụp xuống cam chịu, nhưng khóe môi khẽ giật một nụ cười bí ẩn.", camera: "Low Angle ECU", sfx: "Tiếng bước chân gã sếp bỏ đi giậm mạnh nện trên sàn đá hoa cương" },
+          { num: "03", time: "12 - 25s", vo: "Kính thưa Chủ tịch, đây là chiến lược do chính tay tôi nghiên cứu suốt 6 tháng qua!", visual: "Gã trưởng phòng tự tin bấm remote chuyển slide trên màn hình led khổng lồ trước Hội đồng quản trị. Chủ tịch gật gù hài lòng.", camera: "Wide Shot", sfx: "Tiếng bấm chuột tách, nhạc nền hồi hộp ngầm đẩy dần cao trào" },
+          { num: "04 (TWIST)", time: "25 - 38s", vo: "Nhưng slide tiếp theo... lại không phải bản kế hoạch!", visual: "Slide bất ngờ nhảy sang đoạn video quay lén gã sếp nhận bọc tiền hối lộ từ đối thủ, kèm bản ghi âm giọng nói của gã vang vọng khắp phòng. Gã sếp run rẩy đánh rơi remote.", camera: "Crash Zoom ➡️ Cắt sang Chủ tịch đập bàn", sfx: "Tiếng micro rè chói tai (Feedback screech), tiếng sấm sét nổ tung trong nhạc" },
+          { num: "05 (LOOP)", time: "38 - 45s", vo: "Chàng thực tập sinh mỉm cười bước vào: 'Chúc mừng anh đã tự nộp bằng chứng!'", visual: "Chàng trai mặc vest bước vào tháo thẻ thực tập, để lộ chiếc huy hiệu Trưởng đoàn Thanh tra Tập đoàn. Gã sếp ngã khụy xuống sàn.", camera: "Slow Motion Tracking Shot", sfx: "Nhạc giao hưởng chiến thắng hào hùng vang lên rực rỡ" }
+        ]
+      },
+      {
+        id: 4,
+        title: "Tiệm Bánh Lúc 2 Giờ Sáng",
+        genre: "Giải Trí Nhẹ Nhàng & Chữa Lành (Cozy & Healing Life)",
+        category: "emotional",
+        duration: "~35 giây",
+        hook: "Nếu hôm nay thành phố này làm bạn kiệt sức, hãy ghé vào đây một lát...",
+        message: "Không khí ấm cúng, âm thanh ASMR xoa dịu mệt mỏi sau ngày dài làm việc.",
+        shots: [
+          { num: "01 (HOOK)", time: "0 - 3s", vo: "Nếu hôm nay thành phố này làm bạn kiệt sức, hãy ghé vào đây một lát...", visual: "Một con phố mưa đêm lạnh lẽo. Giữa góc phố le lói ô cửa kính gỗ vàng ấm của một tiệm bánh nhỏ mở muộn.", camera: "Wide Shot ➡️ Slow Push In", sfx: "Tiếng mưa rơi lộp độp êm dịu, tiếng chuông gió cửa tiệm leng keng" },
+          { num: "02", time: "3 - 12s", vo: "Không thoại - Âm thanh ASMR", visual: "Người thợ làm bánh tóc bạc hiền từ rắc lớp đường bột trắng mịn lên chiếc bánh sừng bò vàng ươm vừa ra lò. Khói nóng bốc lên nghi ngút.", camera: "Macro / Extreme Close-up", sfx: "Tiếng rắc đường xào xạc (ASMR sugar dusting), tiếng vỏ bánh giòn tan tách nhẹ" },
+          { num: "03", time: "12 - 25s", vo: "Ở đây không bán bánh... Chúng tôi chỉ đổi lấy một nụ cười của bạn.", visual: "Một cô gái ướt sũng vì mưa bước vào. Người thợ đưa cho cô tách trà quế mật ong bốc khói cùng chiếc bánh nóng hổi. Ánh mắt cô gái dịu lại, khóe mắt ngấn lệ xúc động.", camera: "Medium Shot ➡️ Close-up", sfx: "Tiếng rót trà ấm nóng vào cốc sứ, tiếng nhạc piano lofi du dương êm ái" },
+          { num: "04 (LOOP)", time: "25 - 35s", vo: "Ngày mai trời lại sáng rồi, ngủ ngon nhé... Và đừng quên rằng:", visual: "Làn khói trà bay lên chậm rãi hóa thành hình trái tim nhỏ giữa khung cửa sổ mờ sương đêm.", camera: "Slow Pan Up ➡️ Soft Fade", sfx: "Tiếng thở dài nhẹ nhõm, tiếng đàn guitar mộc rải nốt êm đềm" }
+        ]
+      },
+      {
+        id: 5,
+        title: "Đôi Giày Của Người Cha Câm",
+        genre: "Cảm Xúc Chạm Đáy Lòng / Nước Mắt (Emotional Tearjerker)",
+        category: "emotional",
+        duration: "~45 giây",
+        hook: "Đừng bao giờ xấu hổ về một người cha nghèo... Bởi ông ấy đã cho bạn tất cả những gì ông có.",
+        message: "Tình phụ tử thiêng liêng: Đôi chân trần rướm máu của người cha đổi lấy đôi giày múa satin cho con gái.",
+        shots: [
+          { num: "01 (HOOK)", time: "0 - 3s", vo: "Đừng bao giờ xấu hổ về một người cha nghèo... Bởi ông ấy đã cho bạn tất cả những gì ông có.", visual: "Một người đàn ông trung niên mặc áo bảo hộ lao động sờn rách, đôi bàn tay thô ráp đầy chai sần cẩn thận đếm từng đồng tiền lẻ nhàu nát trước cửa hàng giày múa.", camera: "Close-up bàn tay ➡️ Low Angle", sfx: "Tiếng sột soạt của tiền giấy cũ, tiếng thở nặng nhọc của người lao động" },
+          { num: "02", time: "3 - 15s", vo: "Không thoại - Tiếng thủ ngữ", visual: "Trong lớp múa, cô con gái nhìn đôi giày ba-lê rách mũi của mình, ngập ngừng không dám bước ra vì bạn bè chế giễu. Người cha đứng ngoài cửa sổ kính nhìn vào, lòng thắt lại.", camera: "Medium Shot qua ô cửa kính", sfx: "Tiếng đàn piano dạo nốt trầm buồn xé lòng" },
+          { num: "03", time: "15 - 30s", vo: "Suốt một tháng, ông ấy nhịn bữa trưa và vác thêm hàng trăm bao xi măng dưới nắng gắt...", visual: "Montage nhanh: Người cha mồ hôi ướt đẫm cõng bao xi măng nặng trĩu trên công trường, chân đi đôi dép mòn rách đế. Buổi tối, ông cầm hộp quà thắt nơ đỏ đứng trước cửa phòng con.", camera: "Montage Shot ➡️ Slow motion", sfx: "Tiếng búa nện chát chúa trên công trường, tiếng mưa rơi đêm tĩnh lặng" },
+          { num: "04 (CLIMAX)", time: "30 - 40s", vo: "Thủ ngữ của cha: 'Con gái của ba, hãy tự tin múa đi!'", visual: "Cô bé mở hộp quà: Đôi giày múa màu hồng satin mới tinh lấp lánh. Cô bé nhìn xuống chân cha: Đôi chân trần rướm máu vì dép đứt quai. Cô bé òa khóc ôm chầm lấy cổ cha.", camera: "ECU đôi chân trần ➡️ Medium Shot hai cha con ôm nhau", sfx: "Tiếng đàn Cello và dàn dây giao hưởng dâng trào đỉnh điểm cảm xúc" },
+          { num: "05 (LOOP)", time: "40 - 45s", vo: "Tình yêu của cha không nói thành lời, nhưng vĩ đại hơn cả ngàn non cao...", visual: "Hình ảnh cô bé múa tuyệt đẹp trên sân khấu lớn, dưới hàng ghế khán giả, người cha mỉm cười lau giọt nước mắt hạnh phúc.", camera: "Wide Shot sân khấu ➡️ Fade to Black", sfx: "Tiếng vỗ tay vang dội của khán phòng hòa vào tiếng nhạc lắng đọng" }
+        ]
+      },
+      {
+        id: 6,
+        title: "30 Giây Sinh Tử Trên Mái Nhà",
+        genre: "Hành Động Rượt Đuổi Nghẹt Thở (Mini Action Stunt)",
+        category: "action",
+        duration: "~40 giây",
+        hook: "Mục tiêu đang chạy trốn trên tầng 50! Bắn hạ bằng mọi giá!",
+        message: "Hành động tốc độ cao, góc máy FPV Drone và pha đạp vỡ kính trực thăng kịch tính.",
+        shots: [
+          { num: "01 (HOOK)", time: "0 - 3s", vo: "Mục tiêu đang chạy trốn trên tầng 50! Bắn hạ bằng mọi giá!", visual: "Một đặc vụ mặc áo giáp công nghệ cao lao vút qua lan can kính vỡ vụn trên nóc tháp chọc trời, đằng sau là làn mưa đạn xé toạc không khí giữa bão tuyết.", camera: "FPV Drone Shot bay chúc xuống sát mép vực", sfx: "Tiếng kính vỡ choang, tiếng đạn rít chíu chíu, tiếng trực thăng gầm rú" },
+          { num: "02", time: "3 - 12s", vo: "Không thoại - Nhịp thở dồn dập", visual: "Đặc vụ trượt dài trên sàn băng tuyết, rút súng đôi bắn trả hạ gục hai drone chiến đấu. Hai cỗ máy phát nổ tóe lửa ngay trên đầu anh ta.", camera: "Tracking Low Angle ➡️ Slow Motion", sfx: "Tiếng trượt sàn xoẹt, tiếng súng nổ liên thanh, tiếng nổ bùng Bùm!" },
+          { num: "03", time: "12 - 25s", vo: "Khoảng cách giữa hai tòa nhà là 15 mét... Cậu không thể nhảy qua được đâu!", visual: "Phía trước là vực thẳm sâu hàng trăm mét giữa hai tòa nhà. Đặc vụ đạp mạnh lên gờ tường bê tông, tung người bay vào không trung.", camera: "Extreme Wide Shot nhìn ngang từ xa", sfx: "Tiếng gió rít xé màng nhĩ, tiếng nhạc điện tử synthwave dồn dập" },
+          { num: "04 (TWIST)", time: "25 - 35s", vo: "Tôi không định nhảy... Tôi định hạ gục các người!", visual: "Giữa không trung, anh ta bấm móc câu năng lượng ghim thẳng vào càng trực thăng truy đuổi, đu người đạp thủng kính buồng lái trực thăng.", camera: "Handheld Cam rung giật cực mạnh theo cú va chạm", sfx: "Tiếng kim loại móc cáp Phập!, tiếng vỡ kính trực thăng rền vang" },
+          { num: "05 (LOOP)", time: "35 - 40s", vo: "Và chiếc trực thăng mất lái lao thẳng xuống với lời cảnh báo cuối cùng:", visual: "Chiếc trực thăng bốc khói xoay vòng giữa màn đêm, đặc vụ bung dù thoát hiểm trong gang tấc.", camera: "Dutch Angle ➡️ Cut to Black", sfx: "Tiếng còi báo động trực thăng kêu inh ỏi Warning!, cắt đen dứt khoát" }
+        ]
+      },
+      {
+        id: 7,
+        title: "Chuyến Thang Máy Lúc 00:00",
+        genre: "Kinh Dị Tâm Lý & Bí Ẩn Đô Thị (Urban Legend Suspense)",
+        category: "action",
+        duration: "~40 giây",
+        hook: "Nếu thang máy tự dừng ở tầng 4 lúc nửa đêm... Tuyệt đối đừng bước ra ngoài!",
+        message: "Nỗi sợ không gian hẹp và cú Jump-scare tinh tế từ hình ảnh phản chiếu sau lưng trong gương thang máy.",
+        shots: [
+          { num: "01 (HOOK)", time: "0 - 3s", vo: "Nếu thang máy tự dừng ở tầng 4 lúc nửa đêm... Tuyệt đối đừng bước ra ngoài!", visual: "Cửa thang máy bằng inox sáng loáng từ từ mở ra trước hành lang chung cư tối om. Đèn hành lang nhấp nháy chập chờn màu đỏ quái đản.", camera: "Eye Level từ trong thang máy nhìn ra", sfx: "Tiếng chuông thang máy Ting... kéo dài ma quái, tiếng đèn huỳnh quang kêu rè rè" },
+          { num: "02", time: "3 - 12s", vo: "Bạn bấm nút đóng cửa điên cuồng... nhưng nút bấm hoàn toàn vô hiệu.", visual: "Chàng trai cuống cuồng bấm nút đóng cửa liên tục. Mồ hôi lạnh chảy ròng ròng trên trán. Bảng hiển thị tầng nhấp nháy từ số 4 sang số... âm 4!", camera: "Close-up ngón tay bấm nút ➡️ ECU mặt", sfx: "Tiếng bấm nút cạch cạch gấp gáp, tiếng tim đập thình thịch cực to" },
+          { num: "03", time: "12 - 25s", vo: "Không thoại - Tiếng bước chân chậm rãi", visual: "Từ cuối hành lang đen ngòm, có tiếng bước chân bẹp bẹp tiến lại. Một bóng đen mảnh khảnh với mái tóc dài rũ rượi từ từ bò bằng bốn chi trên trần nhà về phía thang máy.", camera: "High Angle nhìn chúc xuống ➡️ Ngước nhìn lên trần", sfx: "Tiếng khớp xương kêu răng rắc rắc... rắc..., tiếng thở rít khè khè lạnh gáy" },
+          { num: "04 (JUMP SCARE)", time: "25 - 35s", vo: "Nhưng thứ đáng sợ nhất... không phải thứ ở bên ngoài!", visual: "Cửa thang máy đột ngột đóng sầm lại. Chàng trai thở phào nhìn vào gương sau lưng... Trong gương, bóng đen tóc dài đang đứng ngay sát gáy anh ta, thì thầm vào tai!", camera: "Mirror Reflection ➡️ Snap Zoom vào gương mặt", sfx: "Tiếng thét rợn tóc gáy, tiếng đàn violin giật chói tai (Horror screech)" },
+          { num: "05 (LOOP)", time: "35 - 40s", vo: "Và quy tắc sống còn của chuyến thang máy này... bắt đầu từ câu nói:", visual: "Màn hình thang máy tắt phụt, chỉ còn lại nụ cười rạng rỡ màu trắng trong bóng tối hoàn toàn.", camera: "Fade to Pitch Black", sfx: "Tiếng thì thầm 'Tìm thấy ngươi rồi...' hòa vào tiếng chuông Ting..." }
+        ]
+      },
+      {
+        id: 8,
+        title: "Phỏng Vấn Người Dân Năm 2060: Bán Ký Ức",
+        genre: "Phỏng Vấn Thế Giới Song Song (Mockumentary Street Interview)",
+        category: "life",
+        duration: "~40 giây",
+        hook: "Chào bạn! Hôm nay bạn vừa bán đi ký ức nào để trả tiền thuê nhà vậy?",
+        message: "Format phỏng vấn đường phố giả tưởng sâu cay; kích thích tranh luận về công nghệ và tình yêu.",
+        shots: [
+          { num: "01 (HOOK)", time: "0 - 3s", vo: "Chào bạn! Hôm nay bạn vừa bán đi ký ức nào để trả tiền thuê nhà vậy?", visual: "Góc máy phỏng vấn cầm tay (POV phóng viên cầm mic) lia nhanh vào một chàng trai trẻ công sở đang đứng chờ tàu điện ngầm bay trên không trung.", camera: "Handheld Medium Shot", sfx: "Tiếng ồn ào đô thị tương lai, tiếng mic gõ nhẹ bụp bụp, tiếng còi tàu lướt qua" },
+          { num: "02", time: "3 - 15s", vo: "À... Tôi vừa bán toàn bộ ký ức về mối tình đầu 5 năm của mình. Được đúng 2000 đô.", visual: "Chàng trai cười gượng gạo, trên thái dương có vết sẹo cấy chip phát sáng xanh nhạt. Ánh mắt trống rỗng lạ thường khi nhắc đến người yêu cũ.", camera: "Close-up", sfx: "Tiếng gió thổi nhẹ qua micro, tiếng nhạc lofi trầm lắng cất lên" },
+          { num: "03", time: "15 - 28s", vo: "Bạn có cảm thấy tiếc nuối không khi vĩnh viễn không còn nhớ cô ấy là ai?", visual: "Chàng trai nhìn màn hình điện thoại trong suốt: Ảnh cưới đã bị xóa mờ mặt cô dâu. 'Tiếc ư? Tôi thậm chí còn chẳng nhớ cảm giác yêu một người là như thế nào nữa...'", camera: "Over the Shoulder vào điện thoại ➡️ ECU", sfx: "Tiếng tích điện nhẹ từ con chip bíp... bíp..., tiếng thở dài" },
+          { num: "04 (TWIST)", time: "28 - 35s", vo: "Nhưng bất ngờ người phỏng vấn quay camera lại: 'Thực ra... em chính là người con gái đó!'", visual: "Người phỏng vấn hạ mic xuống, tháo kính đen để lộ đôi mắt đẫm lệ. Chàng trai nhìn cô gái xa lạ hoàn toàn, khẽ lịch sự gật đầu chào rồi bước lên tàu!", camera: "Reverse Angle Shot (Góc ngược lại)", sfx: "Nhạc dâng lên nốt cao trào bi ai, tiếng cửa tàu điện đóng sập lại Keng..." },
+          { num: "05 (LOOP)", time: "35 - 40s", vo: "Và câu chuyện về cái giá của sự lãng quên... bắt đầu từ câu hỏi:", visual: "Cô gái đứng cô độc giữa nhà ga tương lai lộng lẫy, camera lùi xa dần.", camera: "Extreme Wide Shot ➡️ Pull Back", sfx: "Tiếng còi tàu hú dài xa xăm hòa vào câu hỏi mở đầu" }
+        ]
+      },
+      {
+        id: 9,
+        title: "Giây Thứ 9 Của Kẻ Bị Coi Thường",
+        genre: "Biến Hình & Thức Tỉnh Chiến Binh (Epic Transformation)",
+        category: "action",
+        duration: "~35 giây",
+        hook: "Một... Hai... Ba... Đứng dậy đi đồ phế vật! Hắn không đứng dậy nổi đâu!",
+        message: "Lội ngược dòng ngoạn mục trên sàn đấu võ MMA; khơi dậy tinh thần chiến đấu vượt khó.",
+        shots: [
+          { num: "01 (HOOK)", time: "0 - 3s", vo: "Một... Hai... Ba... Đứng dậy đi đồ phế vật! Hắn không đứng dậy nổi đâu!", visual: "Một võ sĩ trẻ bị đánh gục nằm úp mặt trên sàn võ đài bát giác đầy máu. Đối thủ khổng lồ đứng trên dây đài giơ tay ăn mừng, đám đông khán giả gào thét chế giễu.", camera: "High Angle sàn đấu ➡️ Low Angle gã đối thủ", sfx: "Tiếng trọng tài đếm vang rền Four... Five..., tiếng gào thét điên cuồng" },
+          { num: "02", time: "3 - 12s", vo: "Trọng tài đếm đến giây thứ 8... Cả thế giới đều nghĩ anh ta đã bỏ cuộc.", visual: "Cận cảnh ngón tay co giật bám chặt vào mặt sàn. Giọt máu từ khóe mắt rơi xuống. Trong đầu anh ta chớp qua hình ảnh người mẹ già đang chắp tay cầu nguyện ở quê nhà.", camera: "ECU bàn tay siết chặt ➡️ Flashback", sfx: "Tiếng tim đập chậm lại như dừng hẳn Thình... thịch..., tiếng đếm Seven... Eight!" },
+          { num: "03 (TRANSFORMATION)", time: "12 - 25s", vo: "Không thoại - Tiếng gầm thét xé toạc võ đài", visual: "Giây thứ 9! Anh ta chống tay bật dậy như con mãnh thú thức tỉnh. Cơ bắp cuộn trào nổi rõ từng đường gân máu, ánh mắt bừng sáng ngọn lửa căm hờn. Đám đông chết lặng.", camera: "Speed Ramp ➡️ Dutch Angle", sfx: "Tiếng gầm vang dội (Battle roar), tiếng đàn ghita điện nện riff Metal bùng nổ" },
+          { num: "04 (CLIMAX)", time: "25 - 32s", vo: "Và đây là đòn trừng phạt cho kẻ dám cười nhạo lòng kiên trì!", visual: "Gã khổng lồ hoảng hốt tung đòn. Võ sĩ lách người né trong tíc tắc, tung cú móc hàm búa bổ. Cú đấm trúng đích làm văng mồ hôi và máu, gã khổng lồ đổ gục như cây chuối!", camera: "Orbit Slow-Motion 360 độ quanh cú đấm", sfx: "Tiếng va chạm Bốp! cực nặng làm rung chuyển màng loa, tiếng thân xác đập sàn Rầm!" },
+          { num: "05 (LOOP)", time: "32 - 35s", vo: "Chiến thắng thuộc về kẻ không bao giờ gục ngã trước tiếng đếm:", visual: "Võ sĩ đứng sừng sững giữa đài giơ cao nắm đấm đẫm máu, ánh đèn pha rọi sáng như một vị thần.", camera: "Low Angle Hero Shot ➡️ Fade to White", sfx: "Tiếng còi kết thúc trận đấu Keng keng keng!, tiếng reo hò vỡ trận" }
+        ]
+      },
+      {
+        id: 10,
+        title: "60 Giây Cuối Cùng Của Chiếc Đồng Hồ Sinh Mệnh",
+        genre: "Khoa Học Giả Định / Nghịch Lý Não Bộ (Sci-Fi What If)",
+        category: "life",
+        duration: "~45 giây",
+        hook: "Nếu trên cổ tay bạn phát sáng một chiếc đồng hồ... và nó chỉ còn đúng 60 giây để sống?",
+        message: "Tuổi thọ là tiền tệ: Sự hy sinh vô điều kiện được đền đáp bằng 100 năm sống vô cực.",
+        shots: [
+          { num: "01 (HOOK)", time: "0 - 3s", vo: "Nếu trên cổ tay bạn phát sáng một chiếc đồng hồ... và nó chỉ còn đúng 60 giây để sống?", visual: "Một chiếc đồng hồ số neon xanh lục cấy dưới da cẳng tay đang đếm ngược từng tích tắc: 00:00:59... 00:00:58... Màu số chuyển dần sang đỏ báo động.", camera: "Macro ECU vào cổ tay ➡️ Cận cảnh mặt", sfx: "Tiếng Tít... tít... tít... báo động tăng dần tốc độ, tiếng thở dồn dập" },
+          { num: "02", time: "3 - 15s", vo: "Ở thế giới này, bạn phải mua từng giờ sống bằng tiền. Nhưng hôm nay, tài khoản của anh ta đã cạn kiệt.", visual: "Chàng trai chạy thục mạng qua con phố cyberpunk đông đúc. Xung quanh, những người giàu có đeo đồng hồ hiển thị hàng trăm năm tuổi, dửng dưng nhìn kẻ sắp hết hạn đời.", camera: "Tracking Cam chạy trước mặt", sfx: "Tiếng bước chân nện gấp gáp trên vũng nước mưa, tiếng thở dốc nghẹn ngào" },
+          { num: "03", time: "15 - 28s", vo: "Chỉ còn 20 giây... Anh ta nhìn thấy một đứa bé vô gia cư bên đường với chiếc đồng hồ chỉ còn 5 giây!", visual: "Đứa bé gái rách rưới ngồi co ro dưới gầm cầu, cánh tay gầy guộc giơ lên với con số 00:00:05... 00:00:04... Đứa bé nhìn anh ta với ánh mắt ngây thơ tuyệt vọng.", camera: "Medium Shot tương phản giữa 2 con số", sfx: "Tiếng còi báo động tử thần vang lên dồn dập từ cả hai cổ tay" },
+          { num: "04 (TWIST)", time: "28 - 38s", vo: "Anh ta dừng lại... chạm tay mình vào cổ tay cô bé, chuyển đi 15 giây cuối cùng của cuộc đời!", visual: "Chàng trai quỳ xuống mỉm cười dịu dàng, áp cổ tay mình vào tay đứa trẻ. Con số ánh sáng xanh tràn qua tay cô bé tăng lên, trong khi đồng hồ của anh ta rơi về 00:00:00.", camera: "Extreme Close-up khoảnh khắc truyền ánh sáng", sfx: "Tiếng nhạc piano ngân vang nốt nhạc thanh khiết như thiên thần, tiếng Tít... dài báo tử" },
+          { num: "05 (LOOP)", time: "38 - 45s", vo: "Nhưng hệ thống bỗng chốc phát nổ thông báo: 'Phát hiện hành vi trắc ẩn vô điều kiện - Tặng thưởng 100 năm sống!'", visual: "Đồng hồ của chàng trai bùng nổ ánh sáng vàng kim rực rỡ, các con số nhảy vọt lên vô cực. Cô bé ôm chầm lấy anh ta mỉm cười.", camera: "Slow Push In vào ánh sáng vàng ➡️ Fade Out", sfx: "Tiếng chuông ngân vang huy hoàng, tiếng thở phào nhẹ nhõm nối mượt về câu mở đầu" }
+        ]
+      },
+      {
+        id: 11,
+        title: "Vì Sao Càng Chăm Chỉ Càng Nghèo?",
+        genre: "Sự Thật Ngược Đời (Unpopular Opinions)",
+        category: "debate",
+        duration: "~35 giây",
+        hook: "Nếu bạn vẫn nghĩ làm việc 14 tiếng mỗi ngày sẽ giúp bạn giàu có... Bạn đang mắc phải cái bẫy lớn nhất của xã hội!",
+        message: "Phân biệt giữa bán thời gian tuyến tính và xây dựng đòn bẩy tự động hóa.",
+        shots: [
+          { num: "01 (HOOK)", time: "0 - 3s", vo: "Nếu bạn vẫn nghĩ làm việc 14 tiếng mỗi ngày sẽ giúp bạn giàu có... Bạn đang mắc phải cái bẫy lớn nhất của xã hội!", visual: "Một nhân viên công sở gục đầu bên bàn làm việc lúc 11h đêm giữa đống giấy tờ bừa bộn, đôi mắt đỏ ngầu quầng thâm, màn hình máy tính phản chiếu ánh sáng xanh ma quái.", camera: "Low Angle Close-up ➡️ Crash Zoom", sfx: "Tiếng gõ phím lạch cạch gấp gáp rồi ngưng bặt, tiếng thở dài não nề, tiếng bass drop trầm" },
+          { num: "02", time: "3 - 12s", vo: "Người chăm chỉ chỉ bán thời gian tuyến tính: 1 giờ đổi lấy 50 ngàn. Khi bạn kiệt sức, thu nhập của bạn lập tức về 0.", visual: "Cảnh montage: Anh ta chen chúc trên xe buýt chật ních người dưới trời mưa tầm tã, cầm bánh mì khô khốc ăn vội. Bên cạnh là chiếc đồng hồ cát đang chảy xiết cạn dần cát vàng.", camera: "Medium Shot ➡️ Visual Metaphor đồng hồ cát", sfx: "Tiếng còi xe inh ỏi, tiếng mưa rào rạt, tiếng cát chảy ràn rạt (Hourglass sand SFX)" },
+          { num: "03", time: "12 - 25s", vo: "Trong khi đó, top 1% giàu nhất không bán thời gian. Họ xây dựng đòn bẩy: Hệ thống, Công nghệ và Trí tuệ nhân tạo làm việc cho họ ngay cả khi đang ngủ!", visual: "Một doanh nhân trẻ phong thái ung dung đứng bên cửa kính căn hộ penthouse tầng 60 ngắm nhìn bình minh thành phố, trên tay cầm tách cà phê nóng, chiếc máy tính bảng bên cạnh hiển thị biểu đồ tăng trưởng tự động.", camera: "Wide Shot ➡️ Slow Push In", sfx: "Tiếng nhạc điện tử lo-fi dâng lên nhịp điệu tích cực, tiếng rót cà phê thơm lừng" },
+          { num: "04 (LOOP)", time: "25 - 35s", vo: "Ngừng bán sức khỏe để làm giàu cho người khác. Hãy bắt đầu xây dựng đòn bẩy của riêng bạn... trước khi nhận ra rằng:", visual: "Khung hình chia đôi (Split-screen): Một bên là nhân viên kiệt sức, một bên là doanh nhân tự do tài chính. Dòng chữ lớn hiện lên: 'Bạn đang ở bên nào?'.", camera: "Split-screen ➡️ Cut to Black", sfx: "Tiếng Tách công tắc điện dứt khoát, nối mượt về câu thoại mở đầu" }
+        ]
+      },
+      {
+        id: 12,
+        title: "3 Lỗi Phòng Ngủ Khiến Bạn Càng Ngủ Càng Kiệt Sức",
+        genre: "Đánh Giá Điểm Nghẽn (The Roast / Critique)",
+        category: "debate",
+        duration: "~35 giây",
+        hook: "Nếu sáng nào thức dậy bạn cũng thấy đầu nặng như đeo đá, hãy nhìn ngay 3 lỗi phòng ngủ chết người này!",
+        message: "Lỗi gương đối diện giường và sóng điện từ điện thoại ảnh hưởng tiêu cực đến giấc ngủ.",
+        shots: [
+          { num: "01 (HOOK)", time: "0 - 3s", vo: "Nếu sáng nào thức dậy bạn cũng thấy đầu nặng như đeo đá, hãy nhìn ngay 3 lỗi phòng ngủ chết người này!", visual: "Một người đàn ông tỉnh giấc lúc 7h sáng, gương mặt phờ phạc, hai tay ôm đầu nhăn nhó đau đớn, ánh sáng mặt trời chiếu vào mặt làm anh ta nheo mắt khó chịu.", camera: "POV người thức dậy ➡️ CU mặt", sfx: "Tiếng chuông báo thức điện thoại reo inh ỏi chói tai, tiếng tim đập nặng nề" },
+          { num: "02", time: "3 - 12s", vo: "Lỗi 1: Đặt gương đối diện giường ngủ. Về mặt sinh học, mỗi lần bạn trở mình, não bộ vô thức ghi nhận chuyển động trong gương là kẻ lạ, khiến giấc ngủ luôn ở trạng thái báo động!", visual: "Căn phòng tối mờ, camera lia từ chiếc giường sang tấm gương lớn đối diện: Bóng đen của chính người ngủ phản chiếu trong gương trông kỳ dị và u ám.", camera: "Dutch Angle ➡️ Push In vào gương", sfx: "Tiếng Ting cảnh báo, tiếng thì thầm vô hình rùng mình" },
+          { num: "03", time: "12 - 25s", vo: "Lỗi 2: Cắm sạc điện thoại ngay đầu giường. Sóng điện từ và ánh sáng đèn LED nhấp nháy ức chế hoàn toàn hormone Melatonin tái tạo cơ thể!", visual: "Cận cảnh chiếc điện thoại phát sáng xanh le lói ngay sát gối ngủ, dây sạc loằng ngoằng. Tia bức xạ màu đỏ giả lập phát ra bao quanh đầu người ngủ.", camera: "Macro ECU vào điện thoại ➡️ CGI bức xạ", sfx: "Tiếng còi rè điện từ Bzzzt, tiếng nhạc giật thót báo động" },
+          { num: "04 (LOOP)", time: "25 - 35s", vo: "Hãy dời ngay gương và điện thoại ra xa đêm nay để cứu lấy bộ não của bạn... trước khi mỗi sáng thức dậy:", visual: "Hình ảnh căn phòng được dọn dẹp sạch sẽ, ánh sáng vàng ấm áp, người ngủ mỉm cười thanh thản trong giấc ngủ sâu.", camera: "Wide Shot phòng ngủ ➡️ Fade Out", sfx: "Tiếng thở phào nhẹ nhõm, tiếng đàn harp ngân vang thanh bình" }
+        ]
+      },
+      {
+        id: 13,
+        title: "Sống Thử 24 Giờ: Triệu Phú Siêu Xe vs. Người Vô Gia Cư",
+        genre: "Thử Thách 2 Cực (The Comparison Experiment)",
+        category: "debate",
+        duration: "~40 giây",
+        hook: "Cùng một con người, nhưng khi bạn đổi bộ quần áo... cả thế giới sẽ đối xử với bạn như hai sinh vật khác nhau!",
+        message: "Phản ánh sâu sắc định kiến xã hội: Quần áo và vẻ ngoài quyết định cách người khác đối xử với bạn.",
+        shots: [
+          { num: "01 (HOOK)", time: "0 - 3s", vo: "Cùng một con người, nhưng khi bạn đổi bộ quần áo... cả thế giới sẽ đối xử với bạn như hai sinh vật khác nhau!", visual: "Khung hình phân đôi hoàn hảo (Split Screen): Bên trái là chàng trai mặc vest may đo đắt tiền bước xuống từ Rolls-Royce; Bên phải là chính chàng trai đó mặc áo rách nát ngồi co ro bên vệ đường.", camera: "Symmetrical Split Screen", sfx: "Tiếng đàn cello tương phản nốt cao vút sang trọng và nốt trầm rách nát bi ai" },
+          { num: "02", time: "3 - 15s", vo: "8:00 sáng: Khi bước vào tiệm cà phê đắt đỏ nhất quận 1 trong bộ đồ rách rưới để xin cốc nước lọc... Thứ tôi nhận lại là ánh mắt khinh bỉ và chiếc chổi đuổi khách!", visual: "Camera giấu kín (POV): Nhân viên phục vụ nhíu mày, xua tay đuổi người vô gia cư ra khỏi cửa tiệm bằng thái độ gay gắt, khách xung quanh liếc nhìn e ngại.", camera: "Handheld Shaky POV", sfx: "Tiếng cửa kính đẩy mạnh, tiếng quát đuổi: 'Đi chỗ khác xin!', tiếng nhạc chùng xuống buồn bã" },
+          { num: "03", time: "15 - 28s", vo: "Nhưng chỉ 1 tiếng sau, khi quay lại với chiếc vest Armani và chiếc đồng hồ Rolex... Người quản lý cúi rạp người mời vào phòng VIP và tặng miễn phí bữa sáng!", visual: "Cũng người nhân viên đó, mặt tươi như hoa, hai tay dâng menu dát vàng, cúi gập người 90 độ phục vụ chàng trai triệu phú.", camera: "Medium Shot ➡️ Push In vào nụ cười nịnh", sfx: "Tiếng nhạc jazz vui tươi quý tộc vang lên, tiếng dao nĩa bạc chạm đĩa sứ lanh lảnh" },
+          { num: "04 (LOOP)", time: "28 - 40s", vo: "Xã hội này không tôn trọng con người thật của bạn... Họ chỉ tôn trọng lớp vỏ bọc bên ngoài. Và bạn sẽ hiểu điều đó khi:", visual: "Chàng trai đứng trước gương soi, một tay cầm chiếc áo rách, một tay cầm áo vest, nhìn thẳng vào ống kính với nụ cười châm biếm sâu cay.", camera: "Eye Level MCU ➡️ Cut to Black", sfx: "Tiếng thở dài trầm ngâm, cắt đen dứt khoát nối về câu Hook đầu" }
+        ]
+      },
+      {
+        id: 14,
+        title: "Siêu Thị Đã Thao Túng Tâm Lý Bạn Như Thế Nào?",
+        genre: "Lật Tẩy Chiêu Trò (The Behind-The-Scenes Secret)",
+        category: "debate",
+        duration: "~35 giây",
+        hook: "Bạn định vào siêu thị chỉ mua 1 tuýp kem đánh răng nhưng lúc thanh toán lại tốn 2 triệu? Đây không phải lỗi của bạn!",
+        message: "Mùi bánh mì kích thích cơn đói và kệ hàng ngang tầm mắt khiến khách mua nhiều hơn 30%.",
+        shots: [
+          { num: "01 (HOOK)", time: "0 - 3s", vo: "Bạn định vào siêu thị chỉ mua 1 tuýp kem đánh răng nhưng lúc thanh toán lại tốn 2 triệu? Đây không phải lỗi của bạn!", visual: "Một giỏ hàng siêu thị đầy ắp bánh kẹo, đồ ăn vặt, đồ gia dụng dù người mua chỉ cầm trên tay chiếc ví nhỏ. Hóa đơn dài dằng dặc in ra từ máy thu ngân.", camera: "High Angle giỏ hàng ➡️ ECU hóa đơn dài", sfx: "Tiếng Tít! quét mã vạch liên hồi, tiếng máy in hóa đơn xé rèn rẹt, tiếng còi báo động ví tiền" },
+          { num: "02", time: "3 - 12s", vo: "Chiêu 1: Mùi bánh mì nướng ngay cửa vào. Siêu thị cố tình đặt quầy bánh nóng ngay lối vào để kích hoạt tuyến nước bọt, khiến não bạn lập tức đói bụng và mua đồ nhiều hơn 30%!", visual: "Cận cảnh chiếc bánh mì vàng ươm tỏa khói thơm ngào ngạt ngay cửa ra vào. Một người khách vô thức hít hà rồi bỏ thêm đồ vào giỏ.", camera: "Slow Motion Close-up ➡️ Biểu cảm khách", sfx: "Tiếng nướng bánh xèo xèo, tiếng hít hà thỏa mãn, tiếng nhạc vui nhộn bí ẩn" },
+          { num: "03", time: "12 - 25s", vo: "Chiêu 2: Những mặt hàng đắt tiền nhất luôn nằm ngang tầm mắt người lớn (1m5 - 1m7). Còn những món giá rẻ nhất luôn bị giấu ở tầng đáy sát đất!", visual: "Camera lia trượt dọc theo kệ hàng: Các sản phẩm đắt tiền phát sáng vàng óng ngay tầm mắt người mua, trong khi tầng đáy tối tăm đầy bụi.", camera: "Tracking Shot dọc kệ hàng từ trên xuống", sfx: "Tiếng click chuột phân tích số liệu, tiếng chuông Ting! phát hiện mánh khóe" },
+          { num: "04 (LOOP)", time: "25 - 35s", vo: "Lần tới đi siêu thị, hãy cúi người nhìn xuống tầng đáy nếu không muốn bị 'thao túng tâm lý' để rồi:", visual: "Khung hình người tiêu dùng thông thái mỉm cười cúi xuống nhặt món hàng giá rẻ ở tầng đáy, nháy mắt với camera.", camera: "Low Angle ➡️ Wink to Camera", sfx: "Tiếng đồng xu rơi leng keng, nhạc nền dứt khoát nối mượt về câu Hook" }
+        ]
+      },
+      {
+        id: 15,
+        title: "Công Thức 3 Bước Tự Tin Nói Trước Đám Đông",
+        genre: "Quy Trình Tối Giản (The 1-2-3 Framework)",
+        category: "debate",
+        duration: "~35 giây",
+        hook: "Nếu mỗi lần đứng trước đám đông bạn đều run rẩy, tim đập thình thịch và trắng xóa não bộ... Hãy áp dụng ngay quy tắc 3 bước này!",
+        message: "Tam giác ánh mắt, hơi thở 4-4-6 và giải phóng căng thẳng cho người hướng nội.",
+        shots: [
+          { num: "01 (HOOK)", time: "0 - 3s", vo: "Nếu mỗi lần đứng trước đám đông bạn đều run rẩy, tim đập thình thịch và trắng xóa não bộ... Hãy áp dụng ngay quy tắc 3 bước này!", visual: "Một cô gái trẻ đứng trước micro trên sân khấu lớn, tay cầm giấy phát biểu run bần bật, mồ hôi vã ra trán, hàng trăm ánh mắt bên dưới đang nhìn chằm chằm.", camera: "POV sân khấu nhìn xuống ➡️ ECU tay run", sfx: "Tiếng micro rè nhẹ Húuu..., tiếng tim đập thình thịch cực to, tiếng thở gấp" },
+          { num: "02", time: "3 - 12s", vo: "Bước 1: Quy tắc Tam Giác Ánh Mắt. Đừng nhìn thẳng vào mắt khán giả! Hãy nhìn vào điểm giữa trán hoặc khoảng trống giữa hai hàng ghế để giảm 80% áp lực!", visual: "Đồ họa CGI vẽ 3 điểm tam giác vô hình trên trán khán giả. Ánh mắt cô gái bình tĩnh trở lại, nhịp thở chậm dần.", camera: "Close-up mặt kết hợp đồ họa 3D", sfx: "Tiếng đồ họa quét mục tiêu Bíp bíp, tiếng thở phào nhẹ nhõm" },
+          { num: "03", time: "12 - 25s", vo: "Bước 2: Hít thở sâu bằng bụng 4 giây - nén 4 giây - thở ra 6 giây để đánh lừa hệ thần kinh rằng bạn đang hoàn toàn an toàn!", visual: "Lồng ngực cô gái nâng lên hạ xuống nhịp nhàng. Đồ họa sóng năng lượng xanh lam dịu mát lan tỏa quanh cơ thể, giải tỏa cơn căng thẳng.", camera: "Medium Shot ➡️ Sóng năng lượng làm dịu", sfx: "Tiếng hít thở sâu thanh tịnh, tiếng chuông gió thiền êm dịu ngân vang" },
+          { num: "04 (LOOP)", time: "25 - 35s", vo: "Luyện tập ngay 3 bước này trước gương tối nay, bạn sẽ không bao giờ còn sợ hãi khoảnh khắc:", visual: "Cô gái cất giọng nói truyền cảm vào micro, cả hội trường đồng loạt vỗ tay tán thưởng nhiệt liệt. Nụ cười rạng rỡ của người chiến thắng.", camera: "Wide Shot hội trường vỗ tay ➡️ Fade Out", sfx: "Tiếng vỗ tay rầm rộ, tiếng nhạc chiến thắng hào hùng vang lên" }
+        ]
+      },
+      {
+        id: 16,
+        title: "Tuyệt Chiêu Đánh Bay Mùi Ẩm Mốc Mùa Nồm",
+        genre: "Người Săn Tìm Giải Pháp (The Problem Solver)",
+        category: "debate",
+        duration: "~30 giây",
+        hook: "Trời nồm ẩm phơi quần áo 3 ngày không khô lại còn bốc mùi hôi chua khó chịu? Quăng ngay đống nước xả vải đi!",
+        message: "Mẹo túi nilon đen kết hợp máy sấy tóc diệt khuẩn 99% không tốn 1 xu.",
+        shots: [
+          { num: "01 (HOOK)", time: "0 - 3s", vo: "Trời nồm ẩm phơi quần áo 3 ngày không khô lại còn bốc mùi hôi chua khó chịu? Quăng ngay đống nước xả vải đi!", visual: "Một người phụ nữ nhăn mặt bịt mũi khi cầm chiếc áo ướt sũng còn bốc mùi chua từ giàn phơi trong căn phòng ẩm ướt, tường nhà đọng nước chảy ròng ròng.", camera: "Close-up biểu cảm nhăn mặt ➡️ Giàn phơi", sfx: "Tiếng sét đánh ngoài trời rạch ngang, tiếng thở dài ngao ngán, tiếng quạt chạy è è" },
+          { num: "02", time: "3 - 10s", vo: "Xịt thêm nước xả chỉ làm mùi hôi và vi khuẩn nấm mốc quyện vào nhau kinh khủng hơn!", visual: "Mô phỏng vi khuẩn nấm mốc màu xanh lá cây sinh sôi nảy nở trên sợi vải khi bị xịt nước hoa hóa chất.", camera: "Macro CGI vào sợi vải vi khuẩn", sfx: "Tiếng nhầy nhụa ghê rợn, tiếng chuông báo lỗi Tè-te!" },
+          { num: "03", time: "10 - 22s", vo: "Hãy làm cách này: Cho quần áo vào túi nilon đen, dùng máy sấy tóc thổi gió nóng vào trong 3 phút. Túi đen giữ nhiệt cực mạnh sẽ diệt sạch 99% vi khuẩn gây mùi tức thì!", visual: "Thao tác thực hành: Chiếc túi nilon đen phồng to như quả bóng dưới luồng khí nóng của máy sấy tóc. Hơi ẩm thoát ra cuồn cuộn.", camera: "Medium Shot thao tác ➡️ Khí nóng bốc lên", sfx: "Tiếng máy sấy tóc vù vù mạnh mẽ, tiếng nilon kêu phần phật giòn tan" },
+          { num: "04 (LOOP)", time: "22 - 30s", vo: "Chiếc áo khô cong thơm tho như phơi nắng hè! Lưu video lại ngay kẻo mùa mưa phùn tới bạn lại phải than vãn:", visual: "Người phụ nữ áp chiếc áo khô ráo, thơm tho vào má với nụ cười hạnh phúc rạng ngời.", camera: "Close-up nụ cười mãn nguyện ➡️ Cut to Black", sfx: "Tiếng hít hà hương thơm sảng khoái, tiếng Ting! kêu gọi lưu video" }
+        ]
+      },
+      {
+        id: 17,
+        title: "Tôi Đã Xóa Sổ Món Nợ 500 Triệu & Mua Nhà Ở Tuổi 25",
+        genre: "Hành Trình Lột Xác (The Comeback / Evolution)",
+        category: "drama",
+        duration: "~40 giây",
+        hook: "Đúng ngày sinh nhật tuổi 23, tài khoản của tôi âm 500 triệu và trên tay là tờ giấy báo siết nợ của ngân hàng...",
+        message: "Nghèo khó là thử thách, không phải định mệnh: Làm 3 việc 1 ngày để sở hữu căn hộ đầu đời.",
+        shots: [
+          { num: "01 (HOOK)", time: "0 - 3s", vo: "Đúng ngày sinh nhật tuổi 23, tài khoản của tôi âm 500 triệu và trên tay là tờ giấy báo siết nợ của ngân hàng...", visual: "Một chàng trai ngồi bệt dưới sàn căn phòng trọ ẩm thấp dột nước, cầm trên tay lá thư đòi nợ màu đỏ, ngọn nến sinh nhật cắm trên chiếc bánh mì nhỏ vụt tắt.", camera: "Low Angle ➡️ Push In vào ngọn nến", sfx: "Tiếng gió rít lạnh lẽo qua khe cửa, tiếng nến phụt tắt, tiếng thở dốc nghẹn ngào" },
+          { num: "02", time: "3 - 15s", vo: "Không đổ lỗi, không khóc lóc. Tôi dán mục tiêu lên tường, làm 3 công việc một ngày: Sáng làm lập trình, tối chạy xe công nghệ, đêm mày mò kinh doanh online.", visual: "Montage hành động dồn dập: Tay gõ phím máy tính điên cuồng ➡️ Đội mũ bảo hiểm chạy xe dưới mưa tầm tã ➡️ Đóng gói từng thùng hàng lúc 3h sáng.", camera: "Fast Montage Cuts (Nhịp cắt cực nhanh 1.5s)", sfx: "Tiếng còi xe phố đêm, tiếng gõ phím lạch cạch dồn dập, tiếng xé băng dính rèn rẹt" },
+          { num: "03", time: "15 - 28s", vo: "Năm đầu tiên trả xong 200 triệu. Năm thứ hai nhân đôi thu nhập nhờ công nghệ AI. Và đến năm thứ 3...", visual: "Biểu đồ nợ giảm dần về số 0. Chàng trai mặc bộ vest lịch lãm bước vào văn phòng công chứng đặt bút ký vào hợp đồng mua bán nhà đất.", camera: "Close-up ngòi bút ký ➡️ Nụ cười tự hào", sfx: "Tiếng nhạc piano dâng lên giai điệu hào hùng, tiếng đặt bút ký dứt khoát" },
+          { num: "04 (LOOP)", time: "28 - 40s", vo: "Tôi cầm chìa khóa bước vào căn hộ đầu tiên của đời mình! Nghèo khó là thử thách, không phải định mệnh. Hãy nhớ lấy điều này mỗi khi bạn rơi vào bế tắc:", visual: "Chàng trai mở toang cánh cửa ban công kính đón ánh hoàng hôn rực rỡ chiếu vào phòng khách căn hộ mới, ngắm nhìn thành phố từ trên cao.", camera: "Wide Shot ban công hoàng hôn", sfx: "Tiếng gió lồng lộng tự do, tiếng nhạc giao hưởng bùng nổ chiến thắng" }
+        ]
+      },
+      {
+        id: 18,
+        title: "24 Giờ Nghẹt Thở Của Bác Sĩ Cấp Cứu",
+        genre: "Một Ngày Đồng Hành (A Day In The Life Of...)",
+        category: "drama",
+        duration: "~35 giây",
+        hook: "02:00 sáng. Tiếng còi cấp cứu xé toạc màn đêm và ca trực sinh tử chính thức bắt đầu!",
+        message: "Góc nhìn sinh tử sau cánh cửa phòng cấp cứu: Trực đêm và giành lại mạng sống cho bệnh nhân.",
+        shots: [
+          { num: "01 (HOOK)", time: "0 - 3s", vo: "02:00 sáng. Tiếng còi cấp cứu xé toạc màn đêm và ca trực sinh tử chính thức bắt đầu!", visual: "Cửa kính phòng cấp cứu bật tung, cáng cứu thương lao vào với tốc độ chóng mặt, đèn xe cứu thương quay chớp đỏ rực hành lang bệnh viện.", camera: "Fast Tracking Shot bám theo cáng", sfx: "Tiếng còi hụ cấp cứu inh ỏi, tiếng bánh xe cáng chạy rầm rập trên sàn gạch" },
+          { num: "02", time: "3 - 12s", vo: "Bệnh nhân đa chấn thương, huyết áp tụt dốc không phanh. Đội ngũ chỉ có đúng 180 giây để ép tim giành lại sự sống từ tay tử thần!", visual: "Bác sĩ nhảy lên cáng ép tim liên tục, mồ hôi ướt đẫm trán rơi xuống kính bảo hộ. Máy đo điện tim kêu tiếng tít kéo dài báo động nguy kịch.", camera: "Close-up bác sĩ ép tim ➡️ Monitor", sfx: "Tiếng đếm ép tim 'Một, hai, ba, bốn!', tiếng máy monitor Tít... tít... tít..." },
+          { num: "03", time: "12 - 25s", vo: "05:00 sáng. Đưa máy sốc tim vào vị trí: 'Tránh xa! Sốc!'... Nhịp tim đập trở lại! Bệnh nhân đã qua cơn nguy kịch.", visual: "Cú giật mạnh của cơ thể bệnh nhân khi dòng điện sốc tim truyền vào. Đường điện tim trên màn hình nhảy nhót trở lại. Bác sĩ thở phào tựa lưng vào tường phòng mổ.", camera: "Slow Motion sốc điện ➡️ Nụ cười nhẹ nhõm", sfx: "Tiếng sốc điện Pặc!, tiếng tim đập trở lại đều đặn thình thịch, tiếng thở phào" },
+          { num: "04 (LOOP)", time: "25 - 35s", vo: "06:30 sáng. Cầm cốc cà phê nguội ngắt ngắm bình minh trước khi đón ca trực tiếp theo... Vì một ngày của chúng tôi luôn bắt đầu từ:", visual: "Bác sĩ tháo găng tay, đứng bên cửa sổ kính bệnh viện nhìn ngắm những tia nắng đầu ngày chiếu sáng thành phố bình yên.", camera: "Silhouette Shot qua cửa sổ bình minh ➡️ Cut to Black", sfx: "Tiếng chuông chim hót bình yên ngoài cửa sổ hòa vào tiếng còi hụ mở đầu" }
+        ]
+      },
+      {
+        id: 19,
+        title: "Điều Gì Xảy Ra Nếu Khủng Long Không Bị Tuyệt Chủng?",
+        genre: "Giả Thuyết Lịch Sử / Khoa Học (The 'What If' History)",
+        category: "life",
+        duration: "~40 giây",
+        hook: "Nếu tiểu hành tinh 65 triệu năm trước chệch hướng Trái Đất chỉ 1 giây... Loài người chúng ta hôm nay thậm chí còn không có cơ hội tồn tại!",
+        message: "Khủng long tiến hóa thành chủng tộc thông minh xây dựng siêu đô thị công nghệ cao.",
+        shots: [
+          { num: "01 (HOOK)", time: "0 - 3s", vo: "Nếu tiểu hành tinh 65 triệu năm trước chệch hướng Trái Đất chỉ 1 giây... Loài người chúng ta hôm nay thậm chí còn không có cơ hội tồn tại!", visual: "Một thiên thạch khổng lồ rực lửa lao sượt qua bầu khí quyển Trái Đất rồi bay mất vào vũ trụ tối tăm, để lại bề mặt Trái Đất nguyên vẹn xanh tươi.", camera: "Extreme Wide Shot từ không gian", sfx: "Tiếng nổ trầm không gian rung chuyển, tiếng rít xé toạc bầu khí quyển" },
+          { num: "02", time: "3 - 15s", vo: "Không có thảm họa bụi mù, loài khủng long tiếp tục tiến hóa suốt 65 triệu năm. Não bộ của loài Troodon phát triển gấp 10 lần, đứng thẳng trên 2 chân và phát triển nền văn minh riêng!", visual: "Một sinh vật bò sát hình người (Dinosauroid) thông minh mặc trang phục kim loại futuristic, đôi mắt bò sát vàng óng sắc sảo đang điều khiển màn hình máy tính lượng tử.", camera: "Medium Shot ➡️ Close-up mắt bò sát", sfx: "Tiếng rít bò sát khẽ khàng đầy bí ẩn, tiếng máy tính tương lai vận hành" },
+          { num: "03", time: "15 - 28s", vo: "Thành phố của chúng sẽ trông như thế này: Những tòa nhà chọc trời sinh học khổng lồ, khủng long bạo chúa T-Rex được thuần hóa làm phương tiện vận tải bọc thép dạo bước trên đại lộ!", visual: "Đại đô thị tương lai tráng lệ: Các loài khủng long bay Pterodactyl lượn quanh các tháp năng lượng mặt trời, T-Rex gắn giáp máy đi giữa phố đông đúc.", camera: "Drone Fly-through qua siêu đô thị", sfx: "Tiếng gầm vang dội của T-Rex hòa cùng tiếng động cơ bay phản lực" },
+          { num: "04 (LOOP)", time: "28 - 40s", vo: "Và loài vượn tổ tiên của con người... vĩnh viễn chỉ là những con thú nhỏ trốn chui trốn nhủi dưới hang sâu! Tất cả đã thay đổi chỉ vì một khoảnh khắc:", visual: "Cận cảnh một chú vượn cổ đại nhỏ bé sợ hãi nép sau tảng đá nhìn đoàn xe khủng long công nghệ cao lướt qua trong đêm.", camera: "Low Angle ➡️ Snap Zoom bầu trời vũ trụ", sfx: "Tiếng thở run rẩy của chú vượn nhỏ, tiếng sấm rền vũ trụ nối mượt về câu Hook" }
+        ]
+      },
+      {
+        id: 20,
+        title: "Quán Cà Phê Không Biển Hiệu Giữa Lòng Phố Cổ",
+        genre: "Săn Tìm Kho Báu Giấu Kín (Hidden Gems)",
+        category: "life",
+        duration: "~35 giây",
+        hook: "Nếu không có người bản địa dẫn đường, 100% bạn sẽ đi lướt qua cánh cửa gỗ cũ kỹ này mà không hề biết bên trong là một thiên đường bí mật!",
+        message: "Giếng trời Indochine ngập nắng và 20 tách cà phê trứng hảo hạng mỗi ngày.",
+        shots: [
+          { num: "01 (HOOK)", time: "0 - 3s", vo: "Nếu không có người bản địa dẫn đường, 100% bạn sẽ đi lướt qua cánh cửa gỗ cũ kỹ này mà không hề biết bên trong là một thiên đường bí mật!", visual: "Máy quay đi bộ (POV) luồn lách qua một con ngõ hẹp rêu phong chỉ vừa 1 người đi ở Hà Nội, dừng lại trước một cánh cửa gỗ mộc mạc không biển hiệu.", camera: "POV First Person Walking Shot", sfx: "Tiếng bước chân nện trên gạch cổ, tiếng lá rơi xào xạc, tiếng chuông đồng hồ xa xăm" },
+          { num: "02", time: "3 - 12s", vo: "Đẩy cánh cửa ra... Một giếng trời ngập tràn ánh nắng và cây xanh hiện ra, tách biệt hoàn toàn khỏi tiếng còi xe inh ỏi ngoài phố thị.", visual: "Cánh cửa kẽo kẹt mở ra: Một không gian sân vườn cổ kính phong cách Indochine ngập tràn nắng vàng, cây hoa giấy rực rỡ và hồ cá Koi bơi lội thanh bình.", camera: "Push In qua cửa ➡️ Wide Shot vườn giếng trời", sfx: "Tiếng kẽo kẹt của bản lề cửa gỗ, tiếng nước chảy róc rách, tiếng chim hót líu lo" },
+          { num: "03", time: "12 - 25s", vo: "Ở đây chỉ phục vụ duy nhất 20 cốc cà phê trứng mỗi ngày. Lớp kem trứng đánh bông mịn như mây quyện cùng cà phê Robusta đậm đặc bốc khói thơm lừng.", visual: "Cận cảnh chiếc muỗng gốm múc lớp kem trứng vàng óng bồng bềnh, nhỏ giọt mịn màng xuống tách gốm nung mộc mạc.", camera: "Macro ECU vào tách cà phê trứng", sfx: "Tiếng đánh trứng bông xốp nhẹ nhàng, tiếng piano jazz cổ điển du dương" },
+          { num: "04 (LOOP)", time: "25 - 35s", vo: "Lưu lại địa chỉ này cho một chiều cuối tuần thảnh thơi... Nhưng nhớ đi thật khẽ, vì:", visual: "Khung hình quay chậm một chú mèo tam thể lười biếng nằm sưởi nắng trên bậc thềm đá rêu phong.", camera: "Slow Pan ➡️ Soft Warm Fade Out", sfx: "Tiếng mèo kêu meo... êm ái, tiếng chuông gió rung nhẹ nối về câu Hook" }
+        ]
+      },
+      {
+        id: 21,
+        title: "Thử Thách 30 Ngày Không Đường & Trà Sữa",
+        genre: "Thử Thách Thay Đổi (The X-Day Challenge)",
+        category: "life",
+        duration: "~35 giây",
+        hook: "Tôi từng là đứa nghiện trà sữa nặng: Ngày nào cũng 2 cốc full topping. Và đây là điều xảy ra với cơ thể tôi sau 30 ngày cắt bỏ hoàn toàn đường!",
+        message: "Hành trình kỷ luật bản thân: Vòng eo giảm 5cm, da căng bóng và tràn đầy năng lượng.",
+        shots: [
+          { num: "01 (HOOK)", time: "0 - 3s", vo: "Tôi từng là đứa nghiện trà sữa nặng: Ngày nào cũng 2 cốc full topping. Và đây là điều xảy ra với cơ thể tôi sau 30 ngày cắt bỏ hoàn toàn đường!", visual: "Một cô gái đứng trước gương nhìn vào vòng eo ngấn mỡ và làn da lấm tấm mụn viêm, trên bàn là hàng chục ly trà sữa rỗng chất đống.", camera: "Medium Shot trước gương ➡️ ECU", sfx: "Tiếng hút cạn ly trà sữa rột rột, tiếng ném ly vào thùng rác dứt khoát Bịch!" },
+          { num: "02", time: "3 - 12s", vo: "Ngày 1 đến Ngày 5: Cơn vật đường hành hạ dữ dội! Đau đầu, cáu gắt và thèm ngọt phát điên. Nhưng tôi thay bằng nước lọc và táo xanh.", visual: "Cô gái ôm đầu vật vã trên giường, cắn chặt môi kìm nén cơn thèm ngọt, tay cầm quả táo xanh cắn giòn rụm thay vì cốc nước ngọt.", camera: "Montage nhanh Day 1 ➡️ Day 5", sfx: "Tiếng cắn táo giòn tan Rôm rốp, tiếng đồng hồ tích tắc dồn dập" },
+          { num: "03", time: "12 - 25s", vo: "Ngày 15: Cơn phù nề biến mất, mụn viêm lặn sạch. Và đến Ngày 30: Vòng eo giảm 5cm, da mặt căng bóng như gương và tràn đầy năng lượng từ sáng đến tối!", visual: "Màn hình biến đổi thần kỳ từ Day 15 sang Day 30: Làn da trắng hồng mịn màng không tì vết, cơ bụng thon gọn săn chắc, cô gái mặc đồ thể thao tự tin sải bước.", camera: "Time-lapse Transformation Split Screen", sfx: "Tiếng hiệu ứng lấp lánh (Sparkle sound), tiếng nhạc EDM vui tươi dâng cao" },
+          { num: "04 (LOOP)", time: "25 - 35s", vo: "Cơ thể bạn chỉ cần 30 ngày để tái sinh hoàn toàn! Tag ngay đứa bạn nghiện trà sữa vào đây để bắt đầu thử thách... trước khi bạn nhận ra:", visual: "Cô gái nở nụ cười rạng ngời giơ cao bình nước detox hoa quả tươi, nháy mắt rủ rê người xem.", camera: "Close-up nụ cười rạng rỡ ➡️ Text Pop-up", sfx: "Tiếng Ting! thông báo challenge thành công, nối mượt về câu Hook" }
+        ]
+      },
+      {
+        id: 22,
+        title: "Thánh Địa Của Kẻ Sưu Tầm Đồng Hồ Cơ",
+        genre: "Thú Vui Sưu Tầm Điện Ảnh (The Collector's Aesthetic)",
+        category: "life",
+        duration: "~35 giây",
+        hook: "Người bình thường nhìn vào chỉ thấy một cỗ máy đo giờ... Nhưng người sành sỏi nhìn vào sẽ thấy cả một kỳ quan cơ khí 300 chi tiết thu nhỏ!",
+        message: "Chiêm ngưỡng kỳ quan Tourbillon với bánh lắc đập 28.800 nhịp/giờ không cần pin.",
+        shots: [
+          { num: "01 (HOOK)", time: "0 - 3s", vo: "Người bình thường nhìn vào chỉ thấy một cỗ máy đo giờ... Nhưng người sành sỏi nhìn vào sẽ thấy cả một kỳ quan cơ khí 300 chi tiết thu nhỏ!", visual: "Chiếc nhíp chuyên dụng gắp một bánh răng vàng siêu nhỏ đặt vào bộ máy đồng hồ Tourbillon lộ cơ (Skeleton). Ánh đèn tiêu cự rọi sáng lấp lánh từng viên đá ruby hồng ngọc.", camera: "Macro Extreme Close-up", sfx: "Tiếng tích tắc cơ khí ròn rã cực êm tai (Mechanical ticking ASMR), tiếng kim loại chạm khẽ" },
+          { num: "02", time: "3 - 12s", vo: "Từng chiếc lò xo tóc mảnh hơn sợi tóc người đập 28.800 lần mỗi giờ. Không pin, không vi mạch điện tử, cỗ máy này có thể chạy chính xác suốt 100 năm chỉ nhờ chuyển động cổ tay của bạn!", visual: "Bộ hồi dao động (Balance wheel) xoay tít liên tục với tốc độ chóng mặt, giải phóng từng xung năng lượng nhịp nhàng.", camera: "Super Macro Slow-motion", sfx: "Tiếng tích tắc cơ học nhịp nhàng như nhịp tim cỗ máy, tiếng nhạc giao hưởng du dương" },
+          { num: "03", time: "12 - 25s", vo: "Chiêm ngưỡng mặt số tráng men xanh đại dương sâu thẳm được nung ở 800 độ C, kết hợp vỏ bạch kim đánh bóng thủ công suốt 40 giờ...", visual: "Chiếc đồng hồ hoàn chỉnh xoay chậm rãi dưới luồng ánh sáng studio mềm mại, phản chiếu sắc xanh sapphire sang trọng và đẳng cấp tột cùng.", camera: "Orbit Shot 360 độ quanh đồng hồ", sfx: "Tiếng xoay núm vặn lên cót Rè rè... giòn tan, nhạc nền dâng lên vẻ quý tộc xa hoa" },
+          { num: "04 (LOOP)", time: "25 - 35s", vo: "Đồng hồ thông minh sau vài năm sẽ thành rác công nghệ, nhưng kiệt tác cơ khí này là thứ bạn lưu truyền cho thế hệ sau... Khi người ta hỏi:", visual: "Bàn tay đeo chiếc đồng hồ cài khuy măng-sét áo sơ mi trắng lịch lãm, bước vào bóng đêm điện ảnh.", camera: "MCU chỉnh cổ tay áo ➡️ Fade to Black", sfx: "Tiếng tích tắc ngân vang thanh thoát, nối mượt về câu Hook mở đầu" }
+        ]
+      },
+      {
+        id: 23,
+        title: "Tóm Tắt Sách 300 Trang Bằng AI Trong 10 Giây",
+        genre: "Trợ Lý Ảo Diệu (The AI Lifehack)",
+        category: "life",
+        duration: "~30 giây",
+        hook: "Đừng bao giờ tốn cả tuần để đọc một cuốn sách dày cộp 300 trang này nữa... Trừ khi bạn không biết mẹo AI siêu đẳng này!",
+        message: "Dùng AI quét trang sách biến thành mindmap 3D trực quan, tiết kiệm 20 giờ đọc sách.",
+        shots: [
+          { num: "01 (HOOK)", time: "0 - 3s", vo: "Đừng bao giờ tốn cả tuần để đọc một cuốn sách dày cộp 300 trang này nữa... Trừ khi bạn không biết mẹo AI siêu đẳng này!", visual: "Một chồng sách dày cộp rơi ầm xuống mặt bàn làm việc, bụi bay mù mịt. Một học sinh nhìn chồng sách với ánh mắt tuyệt vọng ôm đầu.", camera: "High Angle nhìn xuống bàn", sfx: "Tiếng sách rơi Rầm! rung bàn, tiếng thở dài ngao ngán, tiếng bass trầm báo động" },
+          { num: "02", time: "3 - 12s", vo: "Bước 1: Chụp ảnh mục lục hoặc tải file PDF cuốn sách lên công cụ AI này. Bước 2: Nhập đúng câu lệnh thần thánh: 'Trích xuất 5 bài học cốt lõi kèm sơ đồ hành động 3D'.", visual: "Màn hình điện thoại quét camera qua trang sách: Luồng ánh sáng laser xanh quét qua mặt chữ, văn bản được số hóa bay lơ lửng vào ứng dụng AI.", camera: "Close-up màn hình quét tài liệu", sfx: "Tiếng quét laser Bíp... vùuu, tiếng gõ prompt lách cách tốc độ cao" },
+          { num: "03", time: "12 - 22s", vo: "Chỉ sau 5 giây! Toàn bộ nội dung cuốn sách được biến thành một sơ đồ tư duy trực quan, rõ ràng từng bước thực hành, tiết kiệm cho bạn 20 giờ đọc vô bổ!", visual: "Sơ đồ tư duy dạng nhánh 3D phát sáng mở rộng ngoạn mục trên màn hình máy tính bảng, hiển thị đầy đủ các luận điểm lớn kèm icon minh họa.", camera: "Push In vào sơ đồ tư duy 3D trên tablet", sfx: "Tiếng nổ pháo hoa kỹ thuật số Pop pop!, tiếng nhạc công nghệ sôi động vui vẻ" },
+          { num: "04 (LOOP)", time: "22 - 30s", vo: "Lưu ngay câu lệnh này ở phần bình luận để áp dụng cho kỳ thi sắp tới... Và hãy nhắc nhở bạn bè đừng:", visual: "Học sinh mỉm cười tự tin gấp cuốn sách lại, giơ ngón tay cái like camera.", camera: "Medium Shot ➡️ Cut to Black", sfx: "Tiếng gấp sách Bụp nhẹ nhõm, tiếng Ting! kêu gọi lưu video" }
+        ]
+      },
+      {
+        id: 24,
+        title: "Kính AR Thế Hệ Mới Khai Tử Điện Thoại Thông Minh?",
+        genre: "Bản Tin Tương Lai (The Future News)",
+        category: "life",
+        duration: "~35 giây",
+        hook: "Năm 2027: Chiếc điện thoại thông minh trên tay bạn sẽ chính thức trở thành đồ phế liệu trong bảo tàng công nghệ!",
+        message: "Màn hình không gian 200 inch chiếu thẳng vào mắt và bàn phím ảo vô hình.",
+        shots: [
+          { num: "01 (HOOK)", time: "0 - 3s", vo: "Năm 2027: Chiếc điện thoại thông minh trên tay bạn sẽ chính thức trở thành đồ phế liệu trong bảo tàng công nghệ!", visual: "Một chiếc smartphone hiện đại trên tay bỗng nứt vỡ tan tành và hóa thành đống cát bụi kim loại bay biến vào không khí.", camera: "Close-up bàn tay cầm điện thoại tan biến", sfx: "Tiếng thủy tinh rạn nứt giòn tan, tiếng gió cuốn cát bụi vù vù, tiếng nhạc tương lai rùng rợn" },
+          { num: "02", time: "3 - 12s", vo: "Tại sao ư? Hãy nhìn chiếc kính AR siêu mỏng nhẹ chỉ 30 gram này. Nó chiếu toàn bộ màn hình 200 inch trực tiếp lên võng mạc mắt của bạn!", visual: "Một cô gái đeo chiếc kính thời trang trong suốt mỏng dính. Trước mắt cô mở ra cả một không gian làm việc ba chiều lơ lửng giữa không trung.", camera: "POV người đeo kính AR", sfx: "Tiếng khởi động hệ thống tương lai Vút... Ting!, tiếng nhạc điện tử synthwave" },
+          { num: "03", time: "12 - 25s", vo: "Bạn gõ bàn phím ảo lơ lửng trên mặt bàn, gọi video call người đối diện hiện ra như người thật ngồi cạnh bạn bằng công nghệ Holoportation!", visual: "Cô gái chạm nhẹ ngón tay vào không khí để điều khiển các cửa sổ ứng dụng. Hình ảnh ba chiều của người bạn xuất hiện ngồi đối diện trò chuyện sống động.", camera: "Medium Shot ➡️ Xoay góc nhìn toàn cảnh", sfx: "Tiếng chạm phím ảo bíp bíp nhẹ nhàng, tiếng sóng âm thanh holographic trong trẻo" },
+          { num: "04 (LOOP)", time: "25 - 35s", vo: "Bạn sẵn sàng vứt bỏ điện thoại để đeo chiếc kính này mỗi ngày chưa? Câu trả lời sẽ có khi bước sang năm:", visual: "Cô gái mỉm cười gỡ nhẹ gọng kính, ánh sáng xanh từ mắt kính nhấp nháy chào tạm biệt camera.", camera: "Close-up ánh mắt ➡️ Fade to Black", sfx: "Tiếng tắt nguồn công nghệ Vù... Chíp!, nối mượt về câu Hook đầu" }
+        ]
+      },
+      {
+        id: 25,
+        title: "Hô Biến Gỗ Mục Thành Bàn Công Thái Học Phát Sáng",
+        genre: "Hậu Trường Sáng Tạo (The 'How I Made It')",
+        category: "life",
+        duration: "~35 giây",
+        hook: "Người ta vứt khúc gỗ mục nát này ra bãi rác... Nhưng tôi nhìn thấy trong nó một kiệt tác trị giá 50 triệu!",
+        message: "Hành trình tái sinh vật liệu thừa thành siêu phẩm bàn gỗ Epoxy phát sáng dòng sông xanh ngọc.",
+        shots: [
+          { num: "01 (HOOK)", time: "0 - 3s", vo: "Người ta vứt khúc gỗ mục nát này ra bãi rác... Nhưng tôi nhìn thấy trong nó một kiệt tác trị giá 50 triệu!", visual: "Một khúc gỗ xù xì, rêu phong nứt toác bẩn thỉu nằm lăn lóc ở bãi phế liệu dưới trời mưa. Người thợ mộc bước tới nhấc nó lên với ánh mắt say mê.", camera: "Low Angle bãi rác ➡️ Cận cảnh vết nứt", sfx: "Tiếng sấm rền, tiếng mưa rơi trên bãi rác, tiếng gõ vào thớ gỗ kêu Cốp cốp trầm đặc" },
+          { num: "02", time: "3 - 12s", vo: "Giai đoạn 1: Dùng máy bào xé toạc lớp vỏ mục, để lộ những đường vân gỗ uốn lượn hàng trăm năm tuổi. Đóng khuôn và chuẩn bị dòng sông ánh sáng!", visual: "Lưỡi máy bào quét qua, phoi gỗ bay tung tóe rực rỡ dưới ánh đèn xưởng mộc, để lộ thớ gỗ óc chó nâu trầm bóng bẩy.", camera: "Slow-motion phoi gỗ bay", sfx: "Tiếng máy bào gỗ ro ro mạnh mẽ (Woodworking ASMR), tiếng phoi gỗ rơi lạo xạo" },
+          { num: "03", time: "12 - 25s", vo: "Giai đoạn 2: Rót dòng nhựa Epoxy xanh ngọc bích phát quang vào khe nứt. Khi đóng rắn, nó biến thành một dòng sông băng phát sáng kỳ ảo giữa lòng bàn gỗ!", visual: "Dòng keo epoxy trong suốt màu xanh ngọc bích lấp lánh bột dạ quang được rót chầm chậm chảy tràn vào rãnh nứt giữa hai phiến gỗ.", camera: "Macro Close-up dòng keo Epoxy chảy tràn", sfx: "Tiếng rót keo êm tai đặc quánh, tiếng nhạc điện tử ambient du dương ma mị" },
+          { num: "04 (LOOP)", time: "25 - 35s", vo: "Đánh bóng 5 lớp dầu dưỡng... Chiếc bàn công thái học phát sáng giữa đêm đen hoàn thành! Đừng bao giờ vội vứt bỏ bất cứ thứ gì trước khi bạn hỏi:", visual: "Căn phòng tối tắt đèn: Chiếc bàn gỗ hoàn thiện bỗng phát ra ánh sáng xanh lam huyền ảo như dòng sông dải ngân hà giữa phòng làm việc sang trọng.", camera: "Wide Shot phòng tối với bàn phát sáng ➡️ Fade Out", sfx: "Tiếng công tắc điện Tách, tiếng thở phào thán phục, nối mượt về câu Hook" }
+        ]
+      }
+    ];
+
+    let currentFilter = 'all';
+
+    window.addEventListener('DOMContentLoaded', () => {
+      renderAllScripts();
+      buildTocLinks();
+    });
+
+    // Render danh sách kịch bản ra thẻ di động
+    function renderAllScripts() {
+      const container = document.getElementById('scriptListContainer');
+      container.innerHTML = '';
+
+      scriptsData.forEach((s) => {
+        const card = document.createElement('article');
+        card.id = `script-${s.id}`;
+        card.className = `script-card bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden transition-all duration-200`;
+        card.setAttribute('data-category', s.category);
+        card.setAttribute('data-search', `${s.title} ${s.genre} ${s.hook} ${s.message}`.toLowerCase());
+
+        let shotsHtml = '';
+        s.shots.forEach((shot, idx) => {
+          shotsHtml += `
+            <div class="p-3 rounded-xl ${idx === 0 ? 'bg-amber-50/70 border border-amber-200' : 'bg-slate-50 border border-slate-100'} space-y-1.5 text-xs">
+              <div class="flex justify-between items-center">
+                <span class="font-black ${idx === 0 ? 'text-amber-800' : 'text-indigo-800'} flex items-center gap-1">
+                  <span class="w-5 h-5 rounded-md ${idx === 0 ? 'bg-amber-500' : 'bg-indigo-600'} text-white flex items-center justify-center text-[10px] font-bold">${idx + 1}</span>
+                  ${shot.num}
+                </span>
+                <span class="font-bold text-slate-500 bg-white px-2 py-0.5 rounded border text-[11px]">${shot.time}</span>
+              </div>
+              <div class="text-slate-900 font-medium pt-0.5">
+                <span class="text-indigo-600 font-bold">🗣️ Thoại:</span> "${shot.vo}"
+              </div>
+              <div class="text-slate-700 leading-relaxed">
+                <span class="text-emerald-700 font-bold">👁️ Hình ảnh:</span> ${shot.visual}
+              </div>
+              <div class="flex flex-wrap justify-between items-center gap-2 pt-1 border-t border-slate-200/50 text-[11px]">
+                <span class="text-blue-700 font-semibold"><i class="fa-solid fa-video mr-1"></i>${shot.camera}</span>
+                <span class="text-pink-600 italic"><i class="fa-solid fa-volume-high mr-1"></i>${shot.sfx}</span>
+              </div>
+            </div>
+          `;
+        });
+
+        card.innerHTML = `
+          <div class="p-4 md:p-5 border-b border-slate-100 bg-gradient-to-r from-slate-50 to-white">
+            <div class="flex flex-wrap justify-between items-start gap-2 mb-1.5">
+              <div class="flex items-center space-x-2">
+                <span class="w-7 h-7 rounded-lg bg-indigo-700 text-white flex items-center justify-center font-black text-xs shadow-sm">
+                  ${s.id}
+                </span>
+                <span class="text-xs font-bold text-indigo-700 uppercase tracking-wider">${s.genre}</span>
+              </div>
+              <div class="flex items-center space-x-1.5">
+                <span class="text-xs font-bold bg-indigo-100 text-indigo-800 px-2.5 py-0.5 rounded-full">${s.duration}</span>
+                <button onclick="copySingleScript(${s.id})" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-900 text-white rounded-lg text-xs font-bold transition flex items-center gap-1" title="Sao chép kịch bản này">
+                  <i class="fa-regular fa-copy"></i> Chép
+                </button>
+              </div>
+            </div>
+            <h3 class="text-base md:text-lg font-black text-slate-900 leading-snug mt-1">${s.title}</h3>
+            <p class="text-xs text-amber-800 bg-amber-50/80 p-2 rounded-lg border border-amber-200/60 mt-2 font-medium">
+              ⚡ <strong>Hook 3s đầu:</strong> "${s.hook}"
+            </p>
+            ${s.message ? `<p class="text-xs text-slate-500 mt-1.5 italic">💡 <strong>Cơ chế viral:</strong> ${s.message}</p>` : ''}
+          </div>
+
+          <div class="p-4 md:p-5 space-y-3">
+            <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Các phân cảnh chi tiết:</div>
+            ${shotsHtml}
+          </div>
+        `;
+
+        container.appendChild(card);
+      });
+    }
+
+    // Lọc theo nút danh mục
+    function filterCategory(cat) {
+      currentFilter = cat;
+      document.querySelectorAll('.cat-pill').forEach(btn => {
+        btn.classList.remove('bg-amber-400', 'text-indigo-950', 'font-bold');
+        btn.classList.add('bg-indigo-900/80', 'text-indigo-200', 'font-semibold');
+      });
+      event.target.classList.remove('bg-indigo-900/80', 'text-indigo-200', 'font-semibold');
+      event.target.classList.add('bg-amber-400', 'text-indigo-950', 'font-bold');
+
+      filterScripts();
+    }
+
+    // Lọc theo ô tìm kiếm
+    function filterScripts() {
+      const q = document.getElementById('searchInput').value.toLowerCase().trim();
+      let visibleCount = 0;
+
+      document.querySelectorAll('.script-card').forEach(card => {
+        const cat = card.getAttribute('data-category');
+        const text = card.getAttribute('data-search') || '';
+
+        const matchCat = (currentFilter === 'all') || (cat === currentFilter);
+        const matchSearch = !q || text.includes(q);
+
+        if (matchCat && matchSearch) {
+          card.classList.remove('hidden');
+          visibleCount++;
+        } else {
+          card.classList.add('hidden');
+        }
+      });
+
+      const badge = document.getElementById('scriptCountBadge');
+      if (badge) badge.innerText = `${visibleCount} Kịch Bản`;
+    }
+
+    // Sao chép kịch bản đơn lẻ
+    function copySingleScript(id) {
+      const s = scriptsData.find(item => item.id === id);
+      if (!s) return;
+
+      let text = `🎬 KỊCH BẢN: ${s.title.toUpperCase()}\n`;
+      text += `🏷️ Thể loại: ${s.genre}\n`;
+      text += `⏱️ Thời lượng: ${s.duration}\n`;
+      text += `⚡ Hook 3s đầu: "${s.hook}"\n\n`;
+      text += `------------------------------------\n`;
+
+      s.shots.forEach((shot, i) => {
+        text += `📍 Shot ${shot.num} [${shot.time}]:\n`;
+        text += `🗣️ Thoại: "${shot.vo}"\n`;
+        text += `👁️ Hình ảnh: ${shot.visual}\n`;
+        text += `🎥 Góc máy: ${shot.camera}\n`;
+        text += `🔊 Âm thanh: ${shot.sfx}\n\n`;
+      });
+
+      navigator.clipboard.writeText(text).then(() => {
+        showToast();
+      });
+    }
+
+    // Tạo danh sách liên kết trong Modal mục lục
+    function buildTocLinks() {
+      const modal = document.getElementById('tocModalLinks');
+      modal.innerHTML = `
+        <a href="#section-theory" onclick="toggleTocModal()" class="block p-2 rounded-lg bg-indigo-50 font-bold text-indigo-900 mb-2">
+          📘 1. Nguyên Lý & Từ Điển Góc Máy
+        </a>
+        <div class="text-[10px] font-bold uppercase text-slate-400 px-1 pt-1">25 Kịch Bản Mẫu:</div>
+      `;
+
+      scriptsData.forEach(s => {
+        const a = document.createElement('a');
+        a.href = `#script-${s.id}`;
+        a.onclick = toggleTocModal;
+        a.className = "block p-2 rounded-lg hover:bg-slate-100 text-slate-700 truncate border-b border-slate-50";
+        a.innerHTML = `<strong>#${s.id}</strong> ${s.title}`;
+        modal.appendChild(a);
+      });
+    }
+
+    function toggleTocModal() {
+      document.getElementById('tocModal').classList.toggle('hidden');
+    }
+
+    function showToast() {
+      const t = document.getElementById('copyToast');
+      t.classList.remove('opacity-0', 'pointer-events-none');
+      setTimeout(() => {
+        t.classList.add('opacity-0', 'pointer-events-none');
+      }, 2500);
+    }
+  </script>
+</body>
+</html>
