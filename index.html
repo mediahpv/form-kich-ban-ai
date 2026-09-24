@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Biên Kịch Video Ngắn AI - Hệ Thống Soạn Thảo Kịch Bản</title>
+  <!-- Tailwind CSS & FontAwesome -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <!-- html2canvas to export script as beautiful image for Zalo/FB -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+    textarea { resize: vertical; }
+    .modal-backdrop { background-color: rgba(15, 23, 42, 0.6); }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-800 min-h-screen pb-20">
+
+  <!-- Header -->
+  <header class="bg-gradient-to-r from-indigo-700 via-indigo-800 to-purple-800 text-white shadow-md sticky top-0 z-30">
+    <div class="max-w-5xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-3">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-amber-400 text-indigo-900 flex items-center justify-center font-black text-xl shadow">
+          <i class="fa-solid fa-clapperboard"></i>
+        </div>
+        <div>
+          <h1 class="text-base md:text-lg font-black tracking-tight leading-tight">BIÊN KỊCH VIDEO NGẮN AI</h1>
+          <p class="text-xs text-indigo-200">Công cụ nhập liệu chuẩn điện ảnh • Xuất Zalo & Facebook 1-Click</p>
+        </div>
+      </div>
+      <div class="flex items-center space-x-2">
+        <button onclick="openCheatSheet()" class="px-3 py-1.5 bg-indigo-600/70 hover:bg-indigo-600 text-white text-xs font-semibold rounded-lg border border-indigo-400/30 transition flex items-center gap-1.5">
+          <i class="fa-solid fa-book-open"></i> <span class="hidden sm:inline">Tra Cứu</span> Mẫu
+        </button>
+        <button onclick="resetForm()" class="px-3 py-1.5 bg-rose-600/80 hover:bg-rose-600 text-white text-xs font-semibold rounded-lg transition flex items-center gap-1.5">
+          <i class="fa-solid fa-rotate-right"></i> Làm Mới
+        </button>
+        <button onclick="scrollToExport()" class="px-3 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold rounded-lg shadow transition flex items-center gap-1.5">
+          <i class="fa-solid fa-paper-plane"></i> Xuất Bài
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-5xl mx-auto px-3 md:px-4 mt-5">
+
+    <!-- Card 1: Thông tin chung -->
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 md:p-6 mb-5">
+      <div class="flex justify-between items-center mb-4 pb-2 border-b border-slate-100">
+        <h2 class="text-sm font-bold text-slate-700 uppercase tracking-wider flex items-center gap-2">
+          <i class="fa-solid fa-sliders text-indigo-600"></i> 1. Thông Tin Tổng Quan
+        </h2>
+        <span class="text-xs text-slate-400">Tự động lưu nháp chống mất</span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4 mb-3">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Tên Tác Giả / CTV <span class="text-rose-500">*</span></label>
+          <input type="text" id="metaAuthor" placeholder="Ví dụ: Hoàng Nam (CTV)" class="w-full text-sm px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none transition" oninput="saveDraft()">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Tên Kịch Bản <span class="text-rose-500">*</span></label>
+          <input type="text" id="metaTitle" placeholder="Ví dụ: Cú Lừa 10 Tỷ Của Gã Sếp Trưởng" class="w-full text-sm px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none transition" oninput="saveDraft()">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Thể Loại Video</label>
+          <select id="metaGenre" class="w-full text-sm px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none transition" onchange="saveDraft()">
+            <option value="Drama / Lật Kèo Đấu Trí">Drama / Lật Kèo Đấu Trí</option>
+            <option value="Motif 'Khán Giả Tự Hiểu' (Huy Oppa)">Motif 'Khán Giả Tự Hiểu' (Huy Oppa)</option>
+            <option value="Hài Bẻ Lái / Troll Châm Biếm">Hài Bẻ Lái / Troll Châm Biếm</option>
+            <option value="Cảm Xúc Chạm Đáy / Rơi Nước Mắt">Cảm Xúc Chạm Đáy / Rơi Nước Mắt</option>
+            <option value="Giải Trí Nhẹ Nhàng / Chữa Lành">Giải Trí Nhẹ Nhàng / Chữa Lành</option>
+            <option value="Hành Động Nghẹt Thở / Stunt">Hành Động Nghẹt Thở / Stunt</option>
+            <option value="Kinh Dị Tâm Lý / Bí Ẩn Đô Thị">Kinh Dị Tâm Lý / Bí Ẩn Đô Thị</option>
+            <option value="Sự Thật Ngược Đời / Gây Tranh Luận">Sự Thật Ngược Đời / Gây Tranh Luận</option>
+            <option value="Lật Tẩy Chiêu Trò / Chuyên Gia">Lật Tẩy Chiêu Trò / Chuyên Gia</option>
+            <option value="Quy Trình 3 Bước Tối Giản">Quy Trình 3 Bước Tối Giản</option>
+            <option value="Hành Trình Lột Xác / Storytelling">Hành Trình Lột Xác / Storytelling</option>
+            <option value="Một Ngày Đồng Hành (Day In The Life)">Một Ngày Đồng Hành (Day In The Life)</option>
+            <option value="Giả Thuyết 'Nếu... Thì Sao' (Sci-Fi / What If)">Giả Thuyết 'Nếu... Thì Sao' (Sci-Fi / What If)</option>
+            <option value="Săn Tìm Kho Báu Giấu Kín (Hidden Gems)">Săn Tìm Kho Báu Giấu Kín (Hidden Gems)</option>
+            <option value="Thử Thách Thay Đổi (X-Day Challenge)">Thử Thách Thay Đổi (X-Day Challenge)</option>
+            <option value="Thú Vui Sưu Tầm Nghệ Thuật">Thú Vui Sưu Tầm Nghệ Thuật</option>
+            <option value="AI & Tech Lifehack">AI & Tech Lifehack</option>
+            <option value="Hậu Trường Sáng Tạo (How I Made It)">Hậu Trường Sáng Tạo (How I Made It)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">
+            <i class="fa-solid fa-bolt text-amber-500"></i> Câu Hook 3 Giây Đầu (Giật thị giác / Thính giác) <span class="text-rose-500">*</span>
+          </label>
+          <input type="text" id="metaHook" placeholder="Câu thoại sốc hoặc hình ảnh gây tò mò nhất..." class="w-full text-sm px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none transition" oninput="saveDraft()">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">
+            <i class="fa-solid fa-comments text-blue-500"></i> Điểm Kích Hoạt Bình Luận / Thông Điệp Ngầm
+          </label>
+          <input type="text" id="metaMessage" placeholder="Khán giả sẽ cãi nhau vì điều gì hoặc học được điều gì?" class="w-full text-sm px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none transition" oninput="saveDraft()">
+        </div>
+      </div>
+    </div>
+
+    <!-- Thanh đếm thời lượng thông minh -->
+    <div class="bg-indigo-50/80 border border-indigo-200/80 rounded-2xl p-4 mb-5 flex flex-wrap justify-between items-center gap-3">
+      <div class="flex items-center space-x-3">
+        <div class="w-9 h-9 rounded-lg bg-indigo-600 text-white flex items-center justify-center font-bold text-sm shadow">
+          <i class="fa-solid fa-stopwatch"></i>
+        </div>
+        <div>
+          <span class="text-xs font-bold text-slate-500 uppercase tracking-wider block">Ước tính thời lượng</span>
+          <span id="totalDurationBadge" class="text-lg font-black text-indigo-700">~0 giây</span>
+        </div>
+      </div>
+      <div id="durationWarning" class="text-xs font-semibold px-3 py-1.5 rounded-lg bg-white border border-indigo-100 text-slate-600 flex items-center gap-1.5">
+        <i class="fa-solid fa-circle-check text-emerald-500"></i> Thời lượng chuẩn: 30s - 50s
+      </div>
+    </div>
+
+    <!-- Card 2: Danh sách phân cảnh (Storyboard) -->
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 md:p-6 mb-5">
+      <div class="flex justify-between items-center mb-4 pb-2 border-b border-slate-100">
+        <div>
+          <h2 class="text-sm font-bold text-slate-700 uppercase tracking-wider flex items-center gap-2">
+            <i class="fa-solid fa-film text-indigo-600"></i> 2. Chi Tiết Phân Cảnh (Bảng 5 Cột)
+          </h2>
+          <p class="text-xs text-slate-400 mt-0.5">Nhấp vào từng ô để điền nội dung chi tiết</p>
+        </div>
+        <button onclick="addScene()" class="px-3.5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl transition shadow flex items-center gap-1.5">
+          <i class="fa-solid fa-plus"></i> Thêm Cảnh
+        </button>
+      </div>
+
+      <!-- Container danh sách cảnh -->
+      <div id="scenesContainer" class="space-y-4">
+        <!-- Render động bằng JS -->
+      </div>
+
+      <!-- Nút thêm cảnh to ở đáy -->
+      <div class="mt-4 pt-3 flex justify-center">
+        <button onclick="addScene()" class="w-full md:w-auto px-6 py-2.5 border-2 border-dashed border-indigo-300 text-indigo-700 hover:bg-indigo-50/70 rounded-xl text-sm font-bold transition flex items-center justify-center gap-2">
+          <i class="fa-solid fa-plus-circle text-base"></i> Thêm Phân Cảnh Mới
+        </button>
+      </div>
+    </div>
+
+    <!-- KHU VỰC XUẤT BẢN & GỬI BÀI CHO SẾP (ZALO / FB) -->
+    <div id="exportSection" class="bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-white rounded-2xl shadow-xl p-5 md:p-7 mb-8 border border-indigo-800/40">
+      <div class="flex flex-wrap justify-between items-center gap-3 mb-5">
+        <div>
+          <h3 class="text-base md:text-lg font-black text-amber-300 flex items-center gap-2">
+            <i class="fa-solid fa-share-nodes"></i> 3. Xuất Bản & Gửi Kịch Bản
+          </h3>
+          <p class="text-xs text-slate-300 mt-1">Chọn định dạng bạn muốn gửi qua Zalo, Messenger hoặc Facebook</p>
+        </div>
+        <span class="text-xs bg-indigo-800/60 text-indigo-200 px-3 py-1 rounded-full border border-indigo-600/40">Sẵn sàng nộp bài</span>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+        <!-- Nút 1: Copy bảng text -->
+        <button onclick="copyFormattedText()" class="p-3.5 bg-emerald-600 hover:bg-emerald-500 rounded-xl text-left transition shadow flex flex-col justify-between group">
+          <div class="flex justify-between items-start mb-2">
+            <i class="fa-solid fa-clipboard-check text-xl text-emerald-200 group-hover:scale-110 transition"></i>
+            <span class="text-[10px] uppercase font-bold bg-emerald-700 px-2 py-0.5 rounded text-emerald-100">Khuyên Dùng</span>
+          </div>
+          <div>
+            <div class="text-sm font-bold">Sao Chép Bảng Đẹp</div>
+            <div class="text-[11px] text-emerald-100/80">Copy bảng để dán vào tin nhắn Zalo / FB</div>
+          </div>
+        </button>
+
+        <!-- Nút 2: Tải ảnh kịch bản -->
+        <button onclick="downloadAsImage()" id="btnDownloadImage" class="p-3.5 bg-indigo-600 hover:bg-indigo-500 rounded-xl text-left transition shadow flex flex-col justify-between group">
+          <div class="flex justify-between items-start mb-2">
+            <i class="fa-solid fa-file-image text-xl text-indigo-200 group-hover:scale-110 transition"></i>
+            <span class="text-[10px] uppercase font-bold bg-indigo-700 px-2 py-0.5 rounded text-indigo-100">Trực Quan Nhất</span>
+          </div>
+          <div>
+            <div class="text-sm font-bold">Tải Kịch Bản Dạng Ảnh</div>
+            <div class="text-[11px] text-indigo-200/80">Chụp cả bảng thành ảnh PNG gửi Zalo</div>
+          </div>
+        </button>
+
+        <!-- Nút 3: Tải file text -->
+        <button onclick="downloadTextFile()" class="p-3.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-xl text-left transition shadow flex flex-col justify-between group">
+          <div class="flex justify-between items-start mb-2">
+            <i class="fa-solid fa-file-lines text-xl text-slate-300 group-hover:scale-110 transition"></i>
+          </div>
+          <div>
+            <div class="text-sm font-bold">Tải File Văn Bản (.txt)</div>
+            <div class="text-[11px] text-slate-400">Lưu trữ file gốc trên điện thoại / máy tính</div>
+          </div>
+        </button>
+
+        <!-- Nút 4: Mở Zalo -->
+        <button onclick="openZaloApp()" class="p-3.5 bg-blue-600 hover:bg-blue-500 rounded-xl text-left transition shadow flex flex-col justify-between group">
+          <div class="flex justify-between items-start mb-2">
+            <i class="fa-solid fa-comment-dots text-xl text-blue-200 group-hover:scale-110 transition"></i>
+          </div>
+          <div>
+            <div class="text-sm font-bold">Sao Chép & Mở Zalo</div>
+            <div class="text-[11px] text-blue-100/80">Tự động copy rồi mở Zalo để gửi</div>
+          </div>
+        </button>
+      </div>
+
+      <!-- Khung xem trước bảng phục vụ render ảnh -->
+      <div class="mt-6 pt-5 border-t border-indigo-900/60">
+        <div class="flex justify-between items-center mb-3">
+          <span class="text-xs font-bold text-slate-300 uppercase tracking-wider">Xem trước kịch bản thành phẩm:</span>
+          <button onclick="togglePreview()" class="text-xs text-indigo-300 hover:text-white underline">Ẩn / Hiện bản xem trước</button>
+        </div>
+        <div id="previewCardWrapper" class="overflow-x-auto bg-white text-slate-800 rounded-xl p-4 md:p-6 shadow-inner border border-slate-300">
+          <div id="previewCard">
+            <!-- Render xem trước bằng JS -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- MODAL TRA CỨU 25 MẪU KỊCH BẢN & TỪ ĐIỂN GÓC MÁY -->
+  <div id="cheatSheetModal" class="fixed inset-0 z-50 modal-backdrop hidden flex items-center justify-center p-3 md:p-6 overflow-y-auto">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] flex flex-col overflow-hidden">
+      <div class="bg-indigo-700 text-white p-4 flex justify-between items-center">
+        <div class="flex items-center space-x-2">
+          <i class="fa-solid fa-lightbulb text-amber-300 text-lg"></i>
+          <h3 class="font-bold text-sm md:text-base">Bí Kíp Biên Kịch: 25 Mẫu Kịch Bản & Từ Điển Góc Máy</h3>
+        </div>
+        <button onclick="closeCheatSheet()" class="text-white hover:text-amber-300 p-1 text-lg">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="p-4 md:p-6 overflow-y-auto space-y-5 text-xs md:text-sm">
+        <!-- 4 Nhóm chủ đề lớn -->
+        <div>
+          <h4 class="font-bold text-indigo-700 text-sm uppercase mb-2">🔥 Top Ý Tưởng Dễ Lên Xu Hướng</h4>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-slate-700">
+            <div class="p-2.5 bg-slate-50 rounded-lg border"><strong>1. Motif Huy Oppa:</strong> Diễn xuất mặt lạnh (deadpan), chi tiết ngầm trong gương, kết luận thâm thúy không lời thoại.</div>
+            <div class="p-2.5 bg-slate-50 rounded-lg border"><strong>2. Hài bẻ lái:</strong> Tưởng ngầu nhưng quay xe 180 độ (VD: Rút thẻ đen quyền lực chỉ để xin đi nhờ vệ sinh).</div>
+            <div class="p-2.5 bg-slate-50 rounded-lg border"><strong>3. Drama lật mặt:</strong> Bị cướp công lao ➡️ Cài bẫy bằng chứng tố giác ngay trong buổi họp lớn.</div>
+            <div class="p-2.5 bg-slate-50 rounded-lg border"><strong>4. Nước mắt chạm đáy:</strong> Tình phụ tử nghèo, đôi giày múa rách mũi, hy sinh thầm lặng của người thân.</div>
+            <div class="p-2.5 bg-slate-50 rounded-lg border"><strong>5. Hành động nghẹt thở:</strong> FPV drone, rượt đuổi mái nhà, cận chiến võ thuật dồn dập.</div>
+            <div class="p-2.5 bg-slate-50 rounded-lg border"><strong>6. Sự thật ngược đời:</strong> "Vì sao càng chăm chỉ càng nghèo?", bóc tách tư duy đòn bẩy.</div>
+          </div>
+        </div>
+
+        <!-- Từ điển góc máy -->
+        <div>
+          <h4 class="font-bold text-indigo-700 text-sm uppercase mb-2">🎥 Từ Điển Góc Máy Dành Cho Biên Kịch</h4>
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-slate-700">
+            <div class="p-2 bg-indigo-50/60 rounded"><strong>ECU:</strong> Cực cận (Ánh mắt, giọt nước mắt, ngón tay run)</div>
+            <div class="p-2 bg-indigo-50/60 rounded"><strong>CU:</strong> Cận cảnh (Trọn vẹn gương mặt và cảm xúc)</div>
+            <div class="p-2 bg-indigo-50/60 rounded"><strong>Low Angle:</strong> Góc thấp (Nhân vật quyền lực, áp đảo)</div>
+            <div class="p-2 bg-indigo-50/60 rounded"><strong>High Angle:</strong> Góc cao (Nhân vật nhỏ bé, bất lực)</div>
+            <div class="p-2 bg-indigo-50/60 rounded"><strong>Dutch Angle:</strong> Góc nghiêng (Nguy hiểm, bất an)</div>
+            <div class="p-2 bg-indigo-50/60 rounded"><strong>Tracking Shot:</strong> Máy quay chạy bám theo nhân vật</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-slate-100 p-3 flex justify-end">
+        <button onclick="closeCheatSheet()" class="px-4 py-1.5 bg-slate-800 text-white rounded-lg text-xs font-bold">Đóng</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast thông báo -->
+  <div id="copyToast" class="fixed bottom-6 right-6 bg-slate-900 text-white text-xs font-semibold px-4 py-3 rounded-xl shadow-2xl transition-all duration-300 opacity-0 pointer-events-none flex items-center gap-2.5 z-50">
+    <i class="fa-solid fa-circle-check text-emerald-400 text-lg"></i>
+    <span id="toastMessage">Đã sao chép kịch bản hoàn chỉnh!</span>
+  </div>
+
+  <script>
+    // Danh sách góc máy chuẩn
+    const cameraOptions = [
+      "Low Angle (Góc thấp hất lên - Uy quyền)",
+      "Eye Level (Ngang tầm mắt - Chân thực)",
+      "High Angle (Góc cao nhìn xuống - Bất lực)",
+      "Dutch Angle (Góc nghiêng - Bất an, nguy hiểm)",
+      "Extreme Close-up (Cực cận ánh mắt, chi tiết)",
+      "Close-up (Cận cảnh biểu cảm vi mô)",
+      "Medium Shot (Trung cảnh từ thắt lưng)",
+      "Wide Shot (Toàn cảnh bao quát không gian)",
+      "Tracking Shot (Máy quay bám đuổi hành động)",
+      "Orbit Shot 360 (Quay tròn quanh chủ thể)",
+      "Push In (Lướt tới dồn dập)",
+      "Crash Zoom (Zoom giật chớp nhoáng)",
+      "FPV Drone (Bay lượn tốc độ cao)"
+    ];
+
+    let scenes = [];
+
+    // Khởi tạo
+    window.addEventListener('DOMContentLoaded', () => {
+      loadDraft();
+      if (scenes.length === 0) {
+        scenes = [
+          { time: "0 - 3s", vo: "", visual: "Cảnh Hook mở màn giật gân, ánh mắt sốc hoặc hành động bùng nổ...", camera: "Extreme Close-up (Cực cận ánh mắt, chi tiết)", sfx: "Tiếng sub-bass trầm giật mạnh, tiếng thở gấp" },
+          { time: "3 - 12s", vo: "", visual: "Mở rộng mâu thuẫn, diễn xuất biểu cảm vi mô, quai hàm cắn chặt...", camera: "Medium Shot (Trung cảnh từ thắt lưng)", sfx: "Tiếng bước chân gấp gáp, nhạc nền hồi hộp" },
+          { time: "12 - 30s", vo: "", visual: "Đỉnh điểm xung đột / Hành động va chạm mạnh mẽ...", camera: "Tracking Shot (Máy quay bám đuổi hành động)", sfx: "Tiếng kim loại va chạm, nhạc đẩy cao trào" },
+          { time: "30 - 40s", vo: "", visual: "Cú Twist lật kèo bất ngờ hoặc khoảnh khắc chạm đáy cảm xúc...", camera: "Close-up (Cận cảnh biểu cảm vi mô)", sfx: "Nhạc ngắt đột ngột, tiếng cười lạnh người" },
+          { time: "40 - 45s", vo: "", visual: "Cảnh kết thúc tạo vòng lặp vô tận (Seamless Loop) nối mượt về câu đầu...", camera: "Low Angle (Góc thấp hất lên - Uy quyền)", sfx: "Tiếng chuông ngân vang, tiếng thở phào" }
+        ];
+        renderScenes();
+      }
+      updatePreview();
+    });
+
+    // Render danh sách cảnh
+    function renderScenes() {
+      const container = document.getElementById('scenesContainer');
+      container.innerHTML = '';
+
+      scenes.forEach((scene, index) => {
+        const isHook = index === 0;
+        const isLast = index === scenes.length - 1;
+
+        const card = document.createElement('div');
+        card.className = `border rounded-2xl p-4 transition-all duration-150 ${isHook ? 'bg-amber-50/60 border-amber-300/80 shadow-sm' : 'bg-slate-50/90 border-slate-200'}`;
+        card.innerHTML = `
+          <div class="flex justify-between items-center mb-3">
+            <div class="flex items-center space-x-2">
+              <span class="w-6 h-6 rounded-lg flex items-center justify-center text-xs font-black ${isHook ? 'bg-amber-500 text-white' : 'bg-indigo-600 text-white'}">
+                ${index + 1}
+              </span>
+              <span class="text-xs font-black uppercase tracking-wider ${isHook ? 'text-amber-800' : 'text-slate-700'}">
+                ${isHook ? 'Phân Cảnh 1 (HOOK 3s ĐẦU - GIẬT THỊ GIÁC)' : (isLast ? `Phân Cảnh ${index + 1} (KẾT THÚC / SEAMLESS LOOP)` : `Phân Cảnh ${index + 1}`)}
+              </span>
+            </div>
+            <div class="flex items-center space-x-2">
+              <div class="flex items-center space-x-1">
+                <span class="text-[11px] font-bold text-slate-500">Giây:</span>
+                <input type="text" value="${scene.time}" placeholder="0 - 3s" class="text-xs font-bold px-2 py-1 w-20 border rounded-lg bg-white text-center focus:ring-1 focus:ring-indigo-500 focus:outline-none" oninput="updateScene(${index}, 'time', this.value)">
+              </div>
+              ${scenes.length > 1 ? `
+                <button onclick="removeScene(${index})" class="text-slate-400 hover:text-rose-500 p-1 text-xs transition" title="Xóa cảnh này">
+                  <i class="fa-regular fa-trash-can"></i>
+                </button>
+              ` : ''}
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
+            <div>
+              <label class="block text-[11px] font-bold text-slate-600 mb-1">
+                <i class="fa-solid fa-microphone text-indigo-500"></i> Lời Thoại / Phụ Đề (Voiceover)
+              </label>
+              <textarea rows="3" placeholder="Nhập câu thoại hoặc lời đọc ngầm (nếu không có thoại ghi: Không thoại)..." class="w-full text-xs p-2.5 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none" oninput="updateScene(${index}, 'vo', this.value)">${scene.vo}</textarea>
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-slate-600 mb-1">
+                <i class="fa-solid fa-eye text-emerald-500"></i> Mô Tả Hình Ảnh & Diễn Xuất Chi Tiết <span class="text-rose-500">*</span>
+              </label>
+              <textarea rows="3" placeholder="Mô tả cụ thể: Nhân vật làm gì, quai hàm cắn chặt, mắt mở to, ánh sáng, va chạm vật lý..." class="w-full text-xs p-2.5 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none" oninput="updateScene(${index}, 'visual', this.value)">${scene.visual}</textarea>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-[11px] font-bold text-slate-600 mb-1">
+                <i class="fa-solid fa-video text-blue-500"></i> Cỡ Cảnh & Góc Máy
+              </label>
+              <select class="w-full text-xs p-2.5 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none" onchange="updateScene(${index}, 'camera', this.value)">
+                ${cameraOptions.map(opt => `<option value="${opt}" ${scene.camera === opt ? 'selected' : ''}>${opt}</option>`).join('')}
+              </select>
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-slate-600 mb-1">
+                <i class="fa-solid fa-volume-high text-pink-500"></i> Âm Thanh & Tiếng Động (SFX / BGM)
+              </label>
+              <input type="text" value="${scene.sfx}" placeholder="Tiếng kính vỡ, tiếng thở gấp, đàn cello u buồn..." class="w-full text-xs px-3 py-2 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none" oninput="updateScene(${index}, 'sfx', this.value)">
+            </div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+
+      calculateDuration();
+      updatePreview();
+    }
+
+    function updateScene(index, field, value) {
+      scenes[index][field] = value;
+      saveDraft();
+      if (field === 'time') calculateDuration();
+      updatePreview();
+    }
+
+    function addScene() {
+      scenes.push({
+        time: "3 - 5s",
+        vo: "",
+        visual: "",
+        camera: "Medium Shot (Trung cảnh từ thắt lưng)",
+        sfx: ""
+      });
+      renderScenes();
+      saveDraft();
+    }
+
+    function removeScene(index) {
+      if (confirm(`Bạn có chắc muốn xóa phân cảnh ${index + 1}?`)) {
+        scenes.splice(index, 1);
+        renderScenes();
+        saveDraft();
+      }
+    }
+
+    function calculateDuration() {
+      let maxSec = 0;
+      scenes.forEach(s => {
+        const matches = s.time.match(/\d+/g);
+        if (matches) {
+          const nums = matches.map(Number);
+          const max = Math.max(...nums);
+          if (max > maxSec) maxSec = max;
+        }
+      });
+
+      const badge = document.getElementById('totalDurationBadge');
+      const warning = document.getElementById('durationWarning');
+      badge.innerText = `~${maxSec || 0} giây`;
+
+      if (maxSec > 60) {
+        badge.className = "text-lg font-black text-rose-600";
+        warning.className = "text-xs font-semibold px-3 py-1.5 rounded-lg bg-rose-50 border border-rose-200 text-rose-700 flex items-center gap-1.5";
+        warning.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-rose-500"></i> Video hơi dài (>60s). Hãy cắt gọt bớt!`;
+      } else if (maxSec >= 30 && maxSec <= 50) {
+        badge.className = "text-lg font-black text-emerald-600";
+        warning.className = "text-xs font-semibold px-3 py-1.5 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-700 flex items-center gap-1.5";
+        warning.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-500"></i> Thời lượng chuẩn vàng cho video ngắn (${maxSec}s)!`;
+      } else {
+        badge.className = "text-lg font-black text-indigo-700";
+        warning.className = "text-xs font-semibold px-3 py-1.5 rounded-lg bg-white border border-indigo-100 text-slate-600 flex items-center gap-1.5";
+        warning.innerHTML = `<i class="fa-solid fa-info-circle text-indigo-500"></i> Thời lượng: ~${maxSec}s`;
+      }
+    }
+
+    function saveDraft() {
+      const data = {
+        author: document.getElementById('metaAuthor').value,
+        title: document.getElementById('metaTitle').value,
+        genre: document.getElementById('metaGenre').value,
+        hook: document.getElementById('metaHook').value,
+        message: document.getElementById('metaMessage').value,
+        scenes: scenes
+      };
+      localStorage.setItem('ai_script_draft_master', JSON.stringify(data));
+      updatePreview();
+    }
+
+    function loadDraft() {
+      const raw = localStorage.getItem('ai_script_draft_master');
+      if (raw) {
+        try {
+          const d = JSON.parse(raw);
+          if (d.author) document.getElementById('metaAuthor').value = d.author;
+          if (d.title) document.getElementById('metaTitle').value = d.title;
+          if (d.genre) document.getElementById('metaGenre').value = d.genre;
+          if (d.hook) document.getElementById('metaHook').value = d.hook;
+          if (d.message) document.getElementById('metaMessage').value = d.message;
+          if (d.scenes && Array.isArray(d.scenes)) {
+            scenes = d.scenes;
+            renderScenes();
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      }
+    }
+
+    function resetForm() {
+      if (confirm("Bạn có chắc muốn xóa trắng để làm kịch bản mới? Bản nháp cũ sẽ được làm mới.")) {
+        localStorage.removeItem('ai_script_draft_master');
+        document.getElementById('metaTitle').value = '';
+        document.getElementById('metaHook').value = '';
+        document.getElementById('metaMessage').value = '';
+        scenes = [
+          { time: "0 - 3s", vo: "", visual: "", camera: "Extreme Close-up (Cực cận ánh mắt, chi tiết)", sfx: "" },
+          { time: "3 - 12s", vo: "", visual: "", camera: "Medium Shot (Trung cảnh từ thắt lưng)", sfx: "" },
+          { time: "12 - 30s", vo: "", visual: "", camera: "Tracking Shot (Máy quay bám đuổi hành động)", sfx: "" },
+          { time: "30 - 40s", vo: "", visual: "", camera: "Close-up (Cận cảnh biểu cảm vi mô)", sfx: "" }
+        ];
+        renderScenes();
+        showToast("Đã làm mới biểu mẫu soạn thảo!");
+      }
+    }
+
+    // Cập nhật khung xem trước
+    function updatePreview() {
+      const title = document.getElementById('metaTitle').value || 'Tên Kịch Bản Chưa Đặt';
+      const author = document.getElementById('metaAuthor').value || 'Chưa rõ tác giả';
+      const genre = document.getElementById('metaGenre').value;
+      const hook = document.getElementById('metaHook').value || 'Chưa điền';
+      const message = document.getElementById('metaMessage').value || 'Chưa điền';
+
+      const preview = document.getElementById('previewCard');
+      let html = `
+        <div class="border-b-2 border-indigo-700 pb-3 mb-4">
+          <div class="text-xs uppercase font-extrabold text-indigo-700 tracking-wider">Kịch Bản Video Ngắn 100% AI</div>
+          <h2 class="text-lg md:text-xl font-black text-slate-900 leading-tight mt-0.5">${title}</h2>
+          <div class="flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-500 mt-2 font-medium">
+            <span><strong>Tác giả:</strong> ${author}</span>
+            <span><strong>Thể loại:</strong> ${genre}</span>
+            <span><strong>Hook 3s:</strong> "${hook}"</span>
+          </div>
+          ${message ? `<div class="text-xs text-slate-600 mt-1.5 italic"><strong>Thông điệp/Bình luận:</strong> ${message}</div>` : ''}
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse text-xs">
+            <thead>
+              <tr class="bg-indigo-50 border-b border-indigo-200 text-indigo-900 font-bold">
+                <th class="p-2.5 w-12 text-center">Shot</th>
+                <th class="p-2.5 w-20 text-center">Thời lượng</th>
+                <th class="p-2.5 w-1/4">Lời thoại / Phụ đề</th>
+                <th class="p-2.5">Mô tả hình ảnh & Diễn xuất chi tiết</th>
+                <th class="p-2.5 w-32">Góc máy</th>
+                <th class="p-2.5 w-28">Âm thanh SFX</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-200">
+      `;
+
+      scenes.forEach((s, idx) => {
+        html += `
+          <tr class="${idx % 2 === 0 ? 'bg-white' : 'bg-slate-50/50'}">
+            <td class="p-2.5 text-center font-bold text-indigo-700">${String(idx + 1).padStart(2, '0')}</td>
+            <td class="p-2.5 text-center font-semibold text-slate-600">${s.time}</td>
+            <td class="p-2.5 font-medium text-slate-900">${s.vo ? `"${s.vo}"` : '<span class="text-slate-400 italic">Không thoại</span>'}</td>
+            <td class="p-2.5 text-slate-700 leading-relaxed">${s.visual || '<span class="text-slate-300 italic">Chưa nhập</span>'}</td>
+            <td class="p-2.5 font-semibold text-slate-800">${s.camera.split('(')[0]}</td>
+            <td class="p-2.5 text-slate-600">${s.sfx || '<span class="text-slate-300 italic">-</span>'}</td>
+          </tr>
+        `;
+      });
+
+      html += `
+            </tbody>
+          </table>
+        </div>
+        <div class="mt-3 text-[10px] text-slate-400 text-right font-medium">Bản quyền nội dung • Hệ thống kịch bản video AI</div>
+      `;
+
+      preview.innerHTML = html;
+    }
+
+    // Format text
+    function getFullFormattedText() {
+      const title = document.getElementById('metaTitle').value || 'Kịch bản chưa đặt tên';
+      const author = document.getElementById('metaAuthor').value || 'Chưa rõ tác giả';
+      const genre = document.getElementById('metaGenre').value;
+      const hook = document.getElementById('metaHook').value || 'Chưa điền';
+      const message = document.getElementById('metaMessage').value || 'Chưa điền';
+
+      let t = `🎬 KỊCH BẢN VIDEO NGẮN: ${title.toUpperCase()}\n`;
+      t += `👤 Tác giả/CTV: ${author}\n`;
+      t += `🏷️ Thể loại: ${genre}\n`;
+      t += `⚡ Hook 3s đầu: "${hook}"\n`;
+      t += `💬 Kích hoạt thảo luận: ${message}\n\n`;
+      t += `--------------------------------------------------------\n`;
+
+      scenes.forEach((s, i) => {
+        t += `📍 SHOT ${String(i + 1).padStart(2, '0')} [${s.time}]:\n`;
+        t += `🗣️ Thoại: ${s.vo ? `"${s.vo}"` : 'Không thoại'}\n`;
+        t += `👁️ Hình ảnh: ${s.visual || ''}\n`;
+        t += `🎥 Góc máy: ${s.camera}\n`;
+        t += `🔊 Âm thanh/SFX: ${s.sfx || 'Theo nhạc'}\n\n`;
+      });
+
+      t += `--------------------------------------------------------\n`;
+      t += `✅ Kịch bản đã sẵn sàng đưa vào sản xuất!`;
+      return t;
+    }
+
+    // Sao chép text đẹp
+    function copyFormattedText() {
+      const t = getFullFormattedText();
+      navigator.clipboard.writeText(t).then(() => {
+        showToast("Đã sao chép! Hãy mở Zalo hoặc Facebook để Dán (Paste) gửi sếp.");
+      }).catch(e => {
+        alert("Vui lòng cho phép quyền sao chép trên trình duyệt.");
+      });
+    }
+
+    // Tải file văn bản
+    function downloadTextFile() {
+      const t = getFullFormattedText();
+      const title = (document.getElementById('metaTitle').value || 'kich_ban_video_ngan').replace(/\s+/g, '_');
+      const blob = new Blob([t], { type: 'text/plain;charset=utf-8' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `${title}.txt`;
+      a.click();
+      showToast("Đã tải file văn bản về máy!");
+    }
+
+    // Tải kịch bản dạng ảnh chất lượng cao (PNG)
+    function downloadAsImage() {
+      const btn = document.getElementById('btnDownloadImage');
+      const originalText = btn.innerHTML;
+      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-xl"></i><span>Đang tạo ảnh...</span>`;
+
+      const target = document.getElementById('previewCard');
+      html2canvas(target, {
+        scale: 2, // Độ phân giải nét gấp đôi
+        backgroundColor: '#ffffff',
+        useCORS: true
+      }).then(canvas => {
+        const title = (document.getElementById('metaTitle').value || 'kich_ban_video_ngan').replace(/\s+/g, '_');
+        const link = document.createElement('a');
+        link.download = `${title}.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+        btn.innerHTML = originalText;
+        showToast("Đã xuất ảnh kịch bản PNG nét căng! Hãy gửi ảnh này qua Zalo/FB.");
+      }).catch(err => {
+        console.error(err);
+        btn.innerHTML = originalText;
+        alert("Không thể chụp ảnh kịch bản. Bạn hãy dùng tính năng Sao chép.");
+      });
+    }
+
+    // Mở nhanh Zalo
+    function openZaloApp() {
+      copyFormattedText();
+      setTimeout(() => {
+        window.open('https://chat.zalo.me/', '_blank');
+      }, 500);
+    }
+
+    function togglePreview() {
+      const w = document.getElementById('previewCardWrapper');
+      w.classList.toggle('hidden');
+    }
+
+    function openCheatSheet() {
+      document.getElementById('cheatSheetModal').classList.remove('hidden');
+    }
+
+    function closeCheatSheet() {
+      document.getElementById('cheatSheetModal').classList.add('hidden');
+    }
+
+    function scrollToExport() {
+      document.getElementById('exportSection').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('copyToast');
+      document.getElementById('toastMessage').innerText = msg;
+      t.classList.remove('opacity-0', 'pointer-events-none');
+      setTimeout(() => {
+        t.classList.add('opacity-0', 'pointer-events-none');
+      }, 3000);
+    }
+  </script>
+</body>
+</html>
